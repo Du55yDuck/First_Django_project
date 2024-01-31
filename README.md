@@ -1,5 +1,5 @@
 # First_Django_project
-* Created by: Denis Ryabov
+* Created by: Denis Riabov
 * Goal: study on a project from Sergei Balakirev
 * Solve problems: pass
 * Closes problems: pass
