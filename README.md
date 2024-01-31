@@ -1,2 +1,7 @@
 # First_Django_project
-# Name:
+* Created by: Denis Ryabov
+* Goal: study on a project from Sergei Balakirev
+* Solve problems: pass
+* Closes problems: pass
+ ---
+Technologies in the project: Python, Django 5, Jinja2, SQLlite
