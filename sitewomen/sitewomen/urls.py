@@ -15,8 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include  # импорт include
+from women import views  # импорт наших представлений(функций index, categories) из директории women - views.py
+# + папку sitewomen сделали sourse root(рабочий каталог) из-за конфликта в import
 
 urlpatterns = [
     path('admin/', admin.site.urls),
+    path('', include('women.urls')),  # спец. функция include позволяет подключить все маршруты автоматически. Если
+    # на месте '' прописать свой индекс и еще в файле women/urls.py - то он будет добавляться к адресу автоматически
+
+    # Вариант ниже менее оптимизированный, но также возможен
+    # path('cats/', views.categories),  # http://127.0.0.1:8000/cats/ - адрес + добавление индекса cats с каталогом
+    # статей по рубрикам
+    # path('', views.index) - вариант вручную с указанием маршрута на http://127.0.0.1:8000 где '' указывает на
+    # отсутствие индекса после 8000. Нарушает принцип независимости приложений сайта, но допустим!
+
 ]
