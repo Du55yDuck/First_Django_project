@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-n4ea1n#g0ksne#xhk$5yovwm8k5)c7id_5kpm(n-rsumk39m1a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  # по умолчанию True - вывод стандартной инф-ии из Джанго(False дает возможность выводить свои варианты
+DEBUG = True  # по умолчанию True - вывод стандартной инф-ии из Джанго(False дает возможность выводить свои варианты
 # содержимое функций представления для клиента(errors - 400, 403, 404, 500)
 
 ALLOWED_HOSTS = ['127.0.0.1']  # указать наш хост для разрешения ввода изменений
