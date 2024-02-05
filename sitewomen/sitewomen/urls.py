@@ -16,10 +16,8 @@ Including another URLconf
 """
 from django.contrib import admin
 from django.urls import path, include  # импорт include
-
 from women import views  # импорт наших представлений(функций index, categories) из директории women - views.py
 from women.views import page_not_found  # импорт page_not_found(после его представления!)
-
 # + папку sitewomen сделали sourse root(рабочий каталог) из-за конфликта в import
 
 urlpatterns = [
