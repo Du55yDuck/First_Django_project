@@ -1,5 +1,6 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404  # импорт наших классов из django.http
 from django.shortcuts import render, redirect  # импорт redirect
+from django.template.loader import render_to_string  # импорт из шаблонизатора Джанго ф-ии render_to_string
 from django.urls import reverse  # импорт reverse для примера
 
 
@@ -7,7 +8,13 @@ from django.urls import reverse  # импорт reverse для примера
 
 
 def index(request):  # request - ссылка на запрос HttpRequest
-    return HttpResponse("Страница приложения women")  # вернет экземпляр класса с ответом
+    # t = render_to_string('women/index.html')  # обработка шаблона с помощью ф-ии render_to_string(1 вариант)
+    # return HttpResponse(t)  # t - текстовый вариант index.html
+    return render(request, 'women/index.html')  # аналог кода выше, но с render(нужно прописывать путь!)
+
+
+def about(request):  # ф-я представления about(о сайте) + render
+    return render(request, 'women/about.html')  # путь к шаблону about.html(Джанго начинает поиск сверху)
 
 
 def categories(request, cat_id):  # вторая ф-я представления + параметр cat_id принимающие целые числа в конце адреса

@@ -8,6 +8,7 @@ register_converter(converters.FourDigitYearConverter, "year4")  # регистр
 
 urlpatterns = [
     path('', views.index, name='home'),  # http://127.0.0.1:8000 - маршрут отвечает за главную страницу
+    path('about/', views.about, name='about'),  # маршрут about(о сайте)
     path('cats/<int:cat_id>/', views.categories, name='cats_id'),  # http://127.0.0.1:8000/cats/2/ - маршрут за страницу
     # cats + конвертер int с добавлением целого числа в конец адреса + имя маршрута для перенаправления(далее свои)
     path('cats/<slug:cat_slug>/', views.categories_by_slug, name='cats'),  # кон-р для смешанных знач-ий(число + стр)
