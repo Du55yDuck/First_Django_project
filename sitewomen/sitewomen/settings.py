@@ -38,7 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
-    'women.apps.WomenConfig',
+    'women.apps.WomenConfig',  # должно быть указано наше приложение!
 ]
 
 MIDDLEWARE = [
@@ -56,8 +56,8 @@ ROOT_URLCONF = 'sitewomen.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
-        'APP_DIRS': True,
+        'DIRS': [],  # позволяет прописывать не стандартные пути к шаблонам
+        'APP_DIRS': True,  # ищет шаблоны в директориях внутри созданных приложений(используя пути к файлам)
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
