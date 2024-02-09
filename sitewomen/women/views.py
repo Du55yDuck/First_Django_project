@@ -3,18 +3,36 @@ from django.shortcuts import render, redirect  # импорт redirect
 from django.template.loader import render_to_string  # импорт из шаблонизатора Джанго ф-ии render_to_string
 from django.urls import reverse  # импорт reverse для примера
 
-
 # Наше представление в виде функции, формирующее внешний вид сайта
+
+menu = ['О сайте', 'Добавить статью', 'Обратная связь', 'Войти']  # список для примера
+
+
+class MyClass:  # класс для примера
+    def __init__(self, a, b):
+        self.a = a
+        self.b = b
 
 
 def index(request):  # request - ссылка на запрос HttpRequest
     # t = render_to_string('women/index.html')  # обработка шаблона с помощью ф-ии render_to_string(1 вариант)
     # return HttpResponse(t)  # t - текстовый вариант index.html
-    return render(request, 'women/index.html')  # аналог кода выше, но с render(нужно прописывать путь!)
+    data = {  # словарь с данными из шаблона index.html работает с помощью render (для примера)
+        'title': 'Главная страница',
+        'menu': menu,
+        'float': 28.56,
+        'lst': [1, 2, 'abc', True],
+        'set': {1, 2, 3, 4, 5},
+        'dict': {'key_1': 'value_1', 'key_2': 'value_2'},
+        'class_object': MyClass(10, 20)
+    }
+    return render(request, 'women/index.html', context=data)  # аналог кода выше, но с render
+    # (context=data - 3 аргумент с явным параметром) (нужно прописывать путь!)
 
 
-def about(request):  # ф-я представления about(о сайте) + render
-    return render(request, 'women/about.html')  # путь к шаблону about.html(Джанго начинает поиск сверху)
+def about(request):  # ф-я представления about(о сайте) + render ( 3 - аргумент в виде словаря в шаблоне about)
+    return render(request, 'women/about.html', {'title': 'О сайте'})  # путь к шаблону about.html
+    # (Джанго начинает поиск сверху)
 
 
 def categories(request, cat_id):  # вторая ф-я представления + параметр cat_id принимающие целые числа в конце адреса
