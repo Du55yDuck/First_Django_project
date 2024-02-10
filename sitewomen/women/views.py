@@ -2,6 +2,7 @@ from django.http import HttpResponse, HttpResponseNotFound, Http404  # импо�
 from django.shortcuts import render, redirect  # импорт redirect
 from django.template.loader import render_to_string  # импорт из шаблонизатора Джанго ф-ии render_to_string
 from django.urls import reverse  # импорт reverse для примера
+from django.template.defaultfilters import slugify  # пример использования фильтров, импортировав из Джанго
 
 # Наше представление в виде функции, формирующее внешний вид сайта
 
@@ -18,13 +19,14 @@ def index(request):  # request - ссылка на запрос HttpRequest
     # t = render_to_string('women/index.html')  # обработка шаблона с помощью ф-ии render_to_string(1 вариант)
     # return HttpResponse(t)  # t - текстовый вариант index.html
     data = {  # словарь с данными из шаблона index.html работает с помощью render (для примера)
-        'title': 'Главная страница',
+        'title': 'Главная страница?',  # знак ? для примера работы фильтра cut
         'menu': menu,
         'float': 28.56,
         'lst': [1, 2, 'abc', True],
         'set': {1, 2, 3, 4, 5},
         'dict': {'key_1': 'value_1', 'key_2': 'value_2'},
-        'class_object': MyClass(10, 20)
+        'class_object': MyClass(10, 20),
+        'url': slugify("The main page")  # пример фильтра slugify
     }
     return render(request, 'women/index.html', context=data)  # аналог кода выше, но с render
     # (context=data - 3 аргумент с явным параметром) (нужно прописывать путь!)
