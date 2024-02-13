@@ -3,7 +3,11 @@ from django.shortcuts import render, redirect  # импорт redirect
 
 # Наше представление в виде функции, формирующее внешний вид сайта
 
-menu = ['О сайте', 'Добавить статью', 'Обратная связь', 'Войти']  # список для примера
+menu = [{'title': "О сайте", 'url_name': 'about'},  # список со словарей из названия пункта меню и названий маршрутов
+        {'title': "Добавить статью", 'url_name': 'addpage'},
+        {'title': "Обратная связь", 'url_name': 'contact'},
+        {'title': "Войти", 'url_name': 'login'},
+]
 
 data_db = [  # имитация базы данных
     {'id': 1, 'title': 'Анджелина Джоли', 'content': 'Биография Анджелины Джоли', 'is_published': True},
@@ -27,21 +31,20 @@ def about(request):  # ф-я представления about(о сайте) + r
     # (Джанго начинает поиск сверху)
 
 
-def categories(request, cat_id):  # вторая ф-я представления + параметр cat_id принимающие целые числа в конце адреса
-    return HttpResponse(f"<h1>Статьи по категориям</h1><p>id: {cat_id}</p>")  # возвращает экземпляр с ответом
+def show_post(request, post_id):  # ф-я для организации ссылки post_id
+    return HttpResponse(f"Отображение статьи с id = {post_id}")
 
 
-def categories_by_slug(request, cat_slug):  # 3-я ф-я представления для вывода slug в категориях
-    if request.POST:  # условие для POST запроса(если он не пустой, то вывести его в консоль с помощью ф-ии QueryDict
-        print(request.POST)  # вывод POST запроса(также можно работать с GET запросами)
-    return HttpResponse(f"<h1>Статьи по категориям</h1><p>slug: {cat_slug}</p>")  # возвращает slug и набор символов
+def addpage(request):  # ф-я для добавления контента
+    return HttpResponse("Добавление статьи")
 
 
-def archive(request, year):  # ф-я представления для archive
-    if year > 2023:  # условие для обработки исключения для archive
-        return redirect('cats', 'music')  # перенапр-е с archive на slug:cat_slug с кодом 302 + маршрут music
-        # raise Http404()  # генерация исключения 404 ссылающееся на page_not_found, благодаря handler404
-    return HttpResponse(f"<h1>Архив по годам</h1><p>{year}</p>")  # возвращает ответ ф-строку с годом(4 цифры)
+def contact(request):  # ф-я для контактов
+    return HttpResponse("Обратная связь")
+
+
+def login(request):  # ф-я для авторизации
+    return HttpResponse("Авторизация")
 
 
 def page_not_found(request, exception):  # ф-я представления для несуществующих страниц(обязательный request + exc-n)

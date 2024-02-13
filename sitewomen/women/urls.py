@@ -9,10 +9,8 @@ register_converter(converters.FourDigitYearConverter, "year4")  # регистр
 urlpatterns = [
     path('', views.index, name='home'),  # http://127.0.0.1:8000 - маршрут отвечает за главную страницу
     path('about/', views.about, name='about'),  # маршрут about(о сайте)
-    path('cats/<int:cat_id>/', views.categories, name='cats_id'),  # http://127.0.0.1:8000/cats/2/ - маршрут за страницу
-    # cats + конвертер int с добавлением целого числа в конец адреса + имя маршрута для перенаправления(далее свои)
-    path('cats/<slug:cat_slug>/', views.categories_by_slug, name='cats'),  # кон-р для смешанных знач-ий(число + стр)
-    #  !отрабатывает в порядке записи сверху-вниз(сперва cat_id, далее slug) по Джанго!(slug - более общий конвертер)
-    path("archive/<year4:year>/", views.archive, name='archive'),  # маршрут и конвертер archive/year4 - принимающий
-    # 4 цифры как дату
+    path('addpage/', views.addpage, name='addpage'),  # маршрут для поля с собственным именем addpage
+    path('contact/', views.contact, name='contact'),  # маршрут для поля с собственным именем contact
+    path('login/', views.login, name='login'),  # маршрут для поля с собственным именем login
+    path('post/<int:post_id>/', views.show_post, name='post'),  # маршрут с именем для шаблона и ф-ии post(орг-я ссылки)
 ]
