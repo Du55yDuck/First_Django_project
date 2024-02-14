@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-n4ea1n#g0ksne#xhk$5yovwm8k5)c7id_5kpm(n-rsumk39m1a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  # по умолчанию True - вывод стандартной инф-ии из Джанго(False дает возможность выводить свои варианты
+DEBUG = False  # Режим отладки, True - вывод стандартной инф-ии из Джанго(False дает возможность выводить свои варианты
 # содержимое функций представления для клиента(errors - 400, 403, 404, 500)
 
 ALLOWED_HOSTS = ['127.0.0.1']  # указать наш хост для разрешения ввода изменений
@@ -56,7 +56,9 @@ ROOT_URLCONF = 'sitewomen.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],  # позволяет прописывать не стандартные пути к шаблонам
+        'DIRS': [  # позволяет прописывать не стандартные пути к шаблонам(такие, как templates)
+            BASE_DIR / 'templates',  # путь к нашей не стандартной директории
+        ],
         'APP_DIRS': True,  # ищет шаблоны в директориях внутри созданных приложений(используя пути к файлам)
         'OPTIONS': {
             'context_processors': [

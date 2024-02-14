@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"> <! Использовать UTF-8 для простоты и практичности>
+    <title>{{ title }}</title> <! Наша переменная, содержащаяся в ф-ии представления index>
+</head>
+<body>
+<ul>
+    <li><a href="{% url 'home' %}">Главная страница</a></li> <! Реализация главного меню с тегом url для маршрута
+    {% for m in menu %} <! Простой вариант реализации маршрутов с помощью for>
+    {% if not forloop.last %}<li>{% else %}<li class="last">{% endif %} <! Последняя строка будет иметь стиль last>
+        <a href="{% url m.url_name %}">{{ m.title }}</a> <! Способ оформления в столбец + ссылки>
+    </li>
+    {% endfor %}
+</ul>
+{% block content %} {% endblock %} <! блок с названием content>
+</body>
+</html>

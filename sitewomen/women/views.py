@@ -27,8 +27,8 @@ def index(request):  # request - ссылка на запрос HttpRequest
 
 
 def about(request):  # ф-я представления about(о сайте) + render ( 3 - аргумент в виде словаря в шаблоне about)
-    return render(request, 'women/about.html', {'title': 'О сайте'})  # путь к шаблону about.html
-    # (Джанго начинает поиск сверху)
+    return render(request, 'women/about.html', {'title': 'О сайте', 'menu': menu})  # путь к шаблону
+    # about.html !(Джанго начинает поиск сверху)!
 
 
 def show_post(request, post_id):  # ф-я для организации ссылки post_id
