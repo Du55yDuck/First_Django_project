@@ -4,4 +4,4 @@
 * Solve problems: pass
 * Closes problems: pass
  ---
-Technologies in the project: Python, Django 5, Jinja2, SQLlite
+Technologies in the project: Python 3.11, Django 5, Jinja2, SQLlite, Html, CSS

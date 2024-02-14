@@ -1,21 +1,9 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8"> <! Использовать UTF-8 для простоты и практичности>
-    <title>{{ title }}</title> <! Наша переменная, содержащаяся в ф-ии представления index>
-</head>
-<body>
-<ul>
-    <li><a href="{% url 'home' %}">Главная страница</a></li> <! Реализация главного меню с тегом url для маршрута
-    {% for m in menu %} <! Простой вариант реализации маршрутов с помощью for>
-    {% if not forloop.last %}<li>{% else %}<li class="last">{% endif %} <! Последняя строка будет иметь стиль last>
-        <a href="{% url m.url_name %}">{{ m.title }}</a> <! Способ оформления в столбец + ссылки>
-    </li>
-    {% endfor %}
-</ul>
-<p>{{ menu|join:" | " }}</p> <! Примеры вывода наших данных из словаря data в ф-ии index + фильтр join(разделитель)>
-<h1>{{ title }}</h1>
+{% extends 'base.html' %} <! extends наследуется от base.html>
 
+{% block content %}
+<h1>{{ title }}</h1> <! Наша переменная, содержащаяся в ф-ии представления index>
+
+{% include 'women/includes/nav.html' %} <! тэг include + путь к файлу - позволяет дополнять шаблоны>
 <ul>
     {% for p in posts %} <! пример работы for>
     {% if p.is_published %} <! пример работы if>
@@ -23,12 +11,14 @@
         <h2>{{ p.title }}</h2>
         <p>{{ p.content }}</p>
         <p><a href="{% url 'post' p.id %}">Читать пост</a></p> <! Формирование ссылок на основе имени маршрута>
-        {% if not forloop.last %} <! forloop.last - спец переменная для цикла - убрать нижнюю линию>
+        {% if not forloop.last %} <! Forloop.last - спец переменная для цикла - убрать нижнюю линию>
         <hr>
         {% endif %}
     </li>
     {% endif %}
     {% endfor %}
 </ul>
-</body>
-</html>
+
+{% include 'women/includes/nav.html' only with title2='В топе!' %} <! пример с only with ...- доп. включения в шаблон>
+
+{% endblock %}

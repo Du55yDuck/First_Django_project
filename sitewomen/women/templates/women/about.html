@@ -1,10 +1,5 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>{{ title }}</title> <! Наша переменная в ф-ии about>
-</head>
-<body>
-<h1>{{ title }}</h1>
-</body>
-</html>
+{% extends 'base.html' %} <! тэг extends + путь к базовому файлу-шаблонов base>
+
+{% block content %} <! Блок наследуется из базового файла-шаблонов base>
+<h1>{{ title }}</h1> <! Наша переменная, содержащаяся в ф-ии представления index>
+{% endblock %}
