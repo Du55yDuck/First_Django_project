@@ -1,24 +1,17 @@
-{% extends 'base.html' %} <! extends наследуется от base.html>
+{% extends 'base.html' %}
 
 {% block content %}
-<h1>{{ title }}</h1> <! Наша переменная, содержащаяся в ф-ии представления index>
-
-{% include 'women/includes/nav.html' %} <! тэг include + путь к файлу - позволяет дополнять шаблоны>
-<ul>
-    {% for p in posts %} <! пример работы for>
-    {% if p.is_published %} <! пример работы if>
-    <li>
-        <h2>{{ p.title }}</h2>
-        <p>{{ p.content }}</p>
-        <p><a href="{% url 'post' p.id %}">Читать пост</a></p> <! Формирование ссылок на основе имени маршрута>
-        {% if not forloop.last %} <! Forloop.last - спец переменная для цикла - убрать нижнюю линию>
-        <hr>
-        {% endif %}
-    </li>
-    {% endif %}
-    {% endfor %}
+<ul class="list-articles">
+	{% for p in posts %} <! примеры for и if>
+	{% if p.is_published %}
+			<li><h2>{{p.title}}</h2>
+    {% autoescape off %} <! Тэг управляющий за автоматическое экранирование внутри блока>
+	{{p.content|linebreaks|truncatewords:40}} <! фильтры переноса на следующую строку и ограничитель символов>
+    {% endautoescape %}
+			<div class="clear"></div>
+			<p class="link-read-post"><a href="{% url 'post' p.id %}">Читать пост</a></p> <! Реализация ссылки post>
+			</li> <! класс + ссылка на post(кнопка читать статью)
+	{% endif %}
+	{% endfor %}
 </ul>
-
-{% include 'women/includes/nav.html' only with title2='В топе!' %} <! пример с only with ...- доп. включения в шаблон>
-
 {% endblock %}

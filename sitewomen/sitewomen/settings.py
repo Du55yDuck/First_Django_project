@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-n4ea1n#g0ksne#xhk$5yovwm8k5)c7id_5kpm(n-rsumk39m1a'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = False  # Режим отладки, True - вывод стандартной инф-ии из Джанго(False дает возможность выводить свои варианты
+DEBUG = True  # Режим отладки, True - вывод стандартной инф-ии из Джанго(False дает возможность выводить свои варианты
 # содержимое функций представления для клиента(errors - 400, 403, 404, 500)
 
 ALLOWED_HOSTS = ['127.0.0.1']  # указать наш хост для разрешения ввода изменений
@@ -119,7 +119,8 @@ USE_TZ = True
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
-STATIC_URL = 'static/'
+STATIC_URL = 'static/'  # префикс к URL-адресам
+# STATICFILES_DIRS =[ BASE_DIR / ..'static'...] - если нужно указать не стандартные маршруты для static-файлов
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
