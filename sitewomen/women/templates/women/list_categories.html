@@ -1,0 +1,7 @@
+{% for cat in cats %} <! Цикл с перебором переменной cats из women_tags(def show_categories)>
+{% if cat_id == cat_selected %} <! Проверка на соответствие>
+<li class="selected">{{cat.name}}</li> <! Если проверка проходит, то вступает оформление со стилем selected>
+{% else %}
+<li><a href="{% url 'category' cat.id %}">{{cat.name}}</a></li> <! ссылка на список cats_db + ключ name>
+{% endif %}
+{% endfor %}

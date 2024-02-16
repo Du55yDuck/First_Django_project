@@ -17,12 +17,19 @@ data_db = [  # имитация базы данных
     {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография Джулии Робертс', 'is_published': True},
 ]
 
+cats_db = [  # список категорий id для примера
+    {'id': 1, 'name': 'Актрисы'},
+    {'id': 2, 'name': 'Певицы'},
+    {'id': 3, 'name': 'Спортсменки'},
+]
+
 
 def index(request):  # request - ссылка на запрос HttpRequest
     data = {  # словарь с данными из шаблона index.html работает с помощью render (для примера)
         'title': 'Главная страница',
         'menu': menu,
         'posts': data_db,  # через posts идет обращение к data_db
+        'cat_selected': 0,  # cat_selected из list_categories == 0, так как выделяются все рубрики для выделения
     }
     return render(request, 'women/index.html', context=data)  # аналог кода выше, но с render
     # (context=data - 3 аргумент с явным параметром) (нужно прописывать путь!)
@@ -47,6 +54,16 @@ def contact(request):  # ф-я для контактов
 
 def login(request):  # ф-я для авторизации
     return HttpResponse("Авторизация")
+
+
+def show_category(request, cat_id):  # ф-я для вывода категории
+    data = {
+        'title': 'Отображение по рубрикам',
+        'menu': menu,
+        'posts': data_db,
+        'cat_selected': cat_id,
+    }
+    return render(request, 'women/index.html', context=data)
 
 
 def page_not_found(request, exception):  # ф-я представления для несуществующих страниц(обязательный request + exc-n)
