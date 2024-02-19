@@ -38,6 +38,7 @@ INSTALLED_APPS = [
     'django.contrib.sessions',
     'django.contrib.messages',
     'django.contrib.staticfiles',
+    'django_extensions',  # доп пакет для удобства отображения sql запросов
     'women.apps.WomenConfig',  # должно быть указано наше приложение!
 ]
 
