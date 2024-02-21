@@ -8,3 +8,7 @@ class Women(models.Model):  # наш класс-модель с полями д�
     time_update = models.DateTimeField(auto_now=True)  # Поле меняющееся при каждом изменении
     is_published = models.BooleanField(default=True)  # Поле публикации статьи(да/нет)
 
+    def __str__(self):  # ф-я возвращает главное поле при запросах
+        return self.title
+
+
