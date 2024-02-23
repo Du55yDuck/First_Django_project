@@ -1,5 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404  # импорт наших классов из django.http
-from django.shortcuts import render, redirect  # импорт redirect
+from django.shortcuts import render, redirect, get_object_or_404  # импорт redirect
+
+from .models import Women
 
 # Наше представление в виде функции, формирующее внешний вид сайта
 
@@ -25,10 +27,12 @@ cats_db = [  # список категорий id для примера
 
 
 def index(request):  # request - ссылка на запрос HttpRequest
+    posts = Women.objects.filter(is_published=1)  # posts - реализация обращения к БД + filter
+
     data = {  # словарь с данными из шаблона index.html работает с помощью render (для примера)
         'title': 'Главная страница',
         'menu': menu,
-        'posts': data_db,  # через posts идет обращение к data_db
+        'posts': posts,  # непосредственно читает данные из БД
         'cat_selected': 0,  # cat_selected из list_categories == 0, так как выделяются все рубрики для выделения
     }
     return render(request, 'women/index.html', context=data)  # аналог кода выше, но с render
@@ -40,8 +44,16 @@ def about(request):  # ф-я представления about(о сайте) + r
     # about.html !(Джанго начинает поиск сверху)!
 
 
-def show_post(request, post_id):  # ф-я для организации ссылки post_id
-    return HttpResponse(f"Отображение статьи с id = {post_id}")
+def show_post(request, post_slug):  # ф-я для организации ссылки post_slug
+    post = get_object_or_404(Women, slug=post_slug)  # выводит одну страницу по slug или 404 + импорт Women
+
+    data = {  # передает заголовок статьи, меню, страницу
+        'title': post.title,
+        'menu': menu,
+        'post': post,
+        'cat_selected': 1,
+    }
+    return render(request, 'women/post.html', data)  # возвращает шаблон post.html и словарь data
 
 
 def addpage(request):  # ф-я для добавления контента

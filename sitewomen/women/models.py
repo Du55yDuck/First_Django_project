@@ -1,8 +1,10 @@
 from django.db import models
+from django.urls import reverse
 
 
 class Women(models.Model):  # наш класс-модель с полями для таблицы
     title = models.CharField(max_length=255)  # Заголовок с максимальным кол-во символов
+    slug = models.SlugField(max_length=255, unique=True, db_index=True)  # поле для связки с slug в urls
     content = models.TextField(blank=True)  # Поле для текста(статьи) с доступно пустым
     time_create = models.DateTimeField(auto_now_add=True)  # Поле с авто заполнением времени в момент доб new записи
     time_update = models.DateTimeField(auto_now=True)  # Поле меняющееся при каждом изменении
@@ -16,5 +18,10 @@ class Women(models.Model):  # наш класс-модель с полями д�
         indexes = [  # список индексированных полей для ускорения сортировки
             models.Index(fields=['-time_create'])
         ]
+
+    def get_absolute_url(self):  # метод, формирующий url для каждой конкретной записи
+        return reverse('post', kwargs={'post_slug': self.slug})  # ф-я reverse возвращает полноценный url адрес
+
+
 
 
