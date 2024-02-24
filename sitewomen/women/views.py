@@ -27,7 +27,7 @@ cats_db = [  # список категорий id для примера
 
 
 def index(request):  # request - ссылка на запрос HttpRequest
-    posts = Women.objects.filter(is_published=1)  # posts - реализация обращения к БД + filter
+    posts = Women.published.all()  # posts - реализация обращения к БД + filter для published (все публикации)
 
     data = {  # словарь с данными из шаблона index.html работает с помощью render (для примера)
         'title': 'Главная страница',
