@@ -2,13 +2,25 @@ from django.db import models
 from django.urls import reverse
 
 
+class PublishedManager(models.Manager):  # класс пользовательского менеджера для описания моделей
+    def get_queryset(self):  # возвращает опубликованные посты(спец метод базового класса)
+        return super().get_queryset().filter(is_published=Women.Status.PUBLISHED)  # возвращает опубликованные статьи
+
+
 class Women(models.Model):  # наш класс-модель с полями для таблицы
+    class Status(models.IntegerChoices):  # класс для именовывания опубликованных/не опубликованных статей в виджете
+        DRAFT = 0, 'Черновик'  # название-статус в виджете в виде кортежа с int
+        PUBLISHED = 1, 'Опубликовано'
+
     title = models.CharField(max_length=255)  # Заголовок с максимальным кол-во символов
     slug = models.SlugField(max_length=255, unique=True, db_index=True)  # поле для связки с slug в urls
     content = models.TextField(blank=True)  # Поле для текста(статьи) с доступно пустым
     time_create = models.DateTimeField(auto_now_add=True)  # Поле с авто заполнением времени в момент доб new записи
     time_update = models.DateTimeField(auto_now=True)  # Поле меняющееся при каждом изменении
-    is_published = models.BooleanField(default=True)  # Поле публикации статьи(да/нет)
+    is_published = models.BooleanField(choices=Status.choices, default=Status.DRAFT)  # Поле публикации + choices
+
+    objects = models.Manager()  # пользовательский менеджер по умолчанию (работает, если published не активен)
+    published = PublishedManager()  # пользовательский менеджер публикаций(да/нет)
 
     def __str__(self):  # ф-я возвращает главное поле при запросах
         return self.title

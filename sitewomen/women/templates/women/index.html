@@ -3,15 +3,13 @@
 {% block content %}
 <ul class="list-articles">
 	{% for p in posts %} <! примеры for и if>
-	{% if p.is_published %}
 			<li><h2>{{p.title}}</h2>
     {% autoescape off %} <! Тэг управляющий за автоматическое экранирование внутри блока>
-	{{p.content|linebreaks|truncatewords:40}} <! фильтры переноса на следующую строку и ограничитель символов>
+	{{p.content|linebreaks|truncatewords:40}} <! linebreaks - фильтр переноса на след строку и ограничитель символов>
     {% endautoescape %}
 			<div class="clear"></div>
 			<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать пост</a></p> <! Реализация ссылки post>
 			</li> <! класс + ссылка на post(кнопка читать статью) + ссылка на метод get_absolut_url
-	{% endif %}
 	{% endfor %}
 </ul>
 {% endblock %}
