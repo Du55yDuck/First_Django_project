@@ -18,6 +18,9 @@ class Women(models.Model):  # наш класс-модель с полями д�
     time_create = models.DateTimeField(auto_now_add=True)  # Поле с авто заполнением времени в момент доб new записи
     time_update = models.DateTimeField(auto_now=True)  # Поле меняющееся при каждом изменении
     is_published = models.BooleanField(choices=Status.choices, default=Status.DRAFT)  # Поле публикации + choices
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='posts')  # параметр для связки
+    # вторичной модели(women) к первичной (category) через ForeignKey + 'Category'(т.к. задан раньше) +
+    # on_delete=..PROTECT(запрет на удаление постов) + related_name с собственным названием для привязки к вторич модели
 
     objects = models.Manager()  # пользовательский менеджер по умолчанию (работает, если published не активен)
     published = PublishedManager()  # пользовательский менеджер публикаций(да/нет)
@@ -35,5 +38,10 @@ class Women(models.Model):  # наш класс-модель с полями д�
         return reverse('post', kwargs={'post_slug': self.slug})  # ф-я reverse возвращает полноценный url адрес
 
 
+class Category(models.Model):  # Модель Category в виде класса для связи many-to-one (нашей первичной модели category)
+    name = models.CharField(max_length=100, db_index=True)  # имя категории + индексированное поле
+    slug = models.SlugField(max_length=255, unique=True, db_index=True)  # поле для обращения по slug + index
 
+    def __str__(self):  # метод вывода информации
+        return self.name
 
