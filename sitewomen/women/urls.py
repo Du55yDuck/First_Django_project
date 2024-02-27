@@ -13,6 +13,6 @@ urlpatterns = [
     path('contact/', views.contact, name='contact'),  # маршрут для поля с собственным именем contact
     path('login/', views.login, name='login'),  # маршрут для поля с собственным именем login
     path('post/<slug:post_slug>/', views.show_post, name='post'),  # маршрут для шаблона и ф-ии post(орг-я ссылки)+slug
-    path('category/<int:cat_id>/', views.show_category, name='category'),  # маршрут с префиксом для category +
+    path('category/<slug:cat_slug>/', views.show_category, name='category'),  # маршрут с префиксом для category +
     # конвертор int
 ]
