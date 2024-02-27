@@ -45,3 +45,7 @@ class Category(models.Model):  # Модель Category в виде класса 
     def __str__(self):  # метод вывода информации
         return self.name
 
+    def get_absolute_url(self):  # метод для формирования URl адреса (см шаблон в list_categories.html)
+        return reverse('category', kwargs={'cat_slug': self.slug})  # возвращает с помощью reverse маршрут по
+# имени Category и выводить из таблицы по полю slug
+

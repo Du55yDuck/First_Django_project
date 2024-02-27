@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404  # импорт наших классов из django.http
 from django.shortcuts import render, redirect, get_object_or_404  # импорт redirect
 
-from .models import Women
+from .models import Women, Category
 
 # Наше представление в виде функции, формирующее внешний вид сайта
 
@@ -12,17 +12,15 @@ menu = [{'title': "О сайте", 'url_name': 'about'},  # список со с
 ]
 
 data_db = [  # имитация базы данных
-    {'id': 1, 'title': 'Анджелина Джоли', 'content': '''<h1>Анджелина Джоли</h1> (англ. Angelina Jolie[7], при рождении Войт (англ. Voight), ранее Джоли Питт (англ. Jolie Pitt); род. 4 июня 1975, Лос-Анджелес, Калифорния, США) — американская актриса кино, телевидения и озвучивания, кинорежиссёр, сценаристка, продюсер, фотомодель, посол доброй воли ООН.
-    Обладательница премии «Оскар», трёх премий «Золотой глобус» (первая актриса в истории, три года подряд выигравшая премию) и двух «Премий Гильдии киноактёров США».''',
+    {'id': 1, 'title': 'Анджелина Джоли', 'content': '''<h1>Анджелина Джоли</h1> (англ. Angelina Jolie[7], при рождении
+    Войт (англ. Voight), ранее Джоли Питт (англ. Jolie Pitt); род. 4 июня 1975, Лос-Анджелес, Калифорния, США) — 
+    американская актриса кино, телевидения и озвучивания, кинорежиссёр, сценаристка, продюсер, фотомодель, посол доброй
+    воли ООН.
+    Обладательница премии «Оскар», трёх премий «Золотой глобус» (первая актриса в истории, три года подряд выигравшая 
+    премию) и двух «Премий Гильдии киноактёров США».''',
      'is_published': True},
     {'id': 2, 'title': 'Марго Робби', 'content': 'Биография Марго Робби', 'is_published': False},
     {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография Джулии Робертс', 'is_published': True},
-]
-
-cats_db = [  # список категорий id для примера
-    {'id': 1, 'name': 'Актрисы'},
-    {'id': 2, 'name': 'Певицы'},
-    {'id': 3, 'name': 'Спортсменки'},
 ]
 
 
@@ -68,12 +66,15 @@ def login(request):  # ф-я для авторизации
     return HttpResponse("Авторизация")
 
 
-def show_category(request, cat_id):  # ф-я для вывода категории
+def show_category(request, cat_slug):  # ф-я для вывода категории (2 независимых sql запроса для разгрузки БД)
+    category = get_object_or_404(Category, slug=cat_slug)  # указать модель и критерий поиска slug
+    posts = Women.published.filter(cat_id=category.pk)  # отобрать статьи по категориям через pk
+
     data = {
-        'title': 'Отображение по рубрикам',
+        'title': f'Рубрика: {category.name}',  # отображать название категории.
         'menu': menu,
-        'posts': data_db,
-        'cat_selected': cat_id,
+        'posts': posts,
+        'cat_selected': category.pk,
     }
     return render(request, 'women/index.html', context=data)
 

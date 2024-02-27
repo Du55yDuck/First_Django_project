@@ -3,7 +3,11 @@
 {% block content %}
 <ul class="list-articles">
 	{% for p in posts %} <! примеры for и if>
-			<li><h2>{{p.title}}</h2>
+			<li><div class="article-panel"> <! Оформление с помощью div >
+	<p class="first">Категория: {{p.cat.name}}</p> <! Обращение к p.cat и отобразить название категории через models.py>
+	<p class="last">Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</p> <! Отображение даты и времени>
+	</div>
+				<h2>{{p.title}}</h2>
     {% autoescape off %} <! Тэг управляющий за автоматическое экранирование внутри блока>
 	{{p.content|linebreaks|truncatewords:40}} <! linebreaks - фильтр переноса на след строку и ограничитель символов>
     {% endautoescape %}
