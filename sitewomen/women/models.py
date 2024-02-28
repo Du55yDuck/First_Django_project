@@ -21,6 +21,7 @@ class Women(models.Model):  # наш класс-модель с полями д�
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='posts')  # параметр для связки
     # вторичной модели(women) к первичной (category) через ForeignKey + 'Category'(т.к. задан раньше) +
     # on_delete=..PROTECT(запрет на удаление постов) + related_name с собственным названием для привязки к вторич модели
+    tags = models.ManyToManyField('TagPost', blank=True, related_name='tags')  # параметр для связи many-to-many
 
     objects = models.Manager()  # пользовательский менеджер по умолчанию (работает, если published не активен)
     published = PublishedManager()  # пользовательский менеджер публикаций(да/нет)
@@ -48,4 +49,12 @@ class Category(models.Model):  # Модель Category в виде класса 
     def get_absolute_url(self):  # метод для формирования URl адреса (см шаблон в list_categories.html)
         return reverse('category', kwargs={'cat_slug': self.slug})  # возвращает с помощью reverse маршрут по
 # имени Category и выводить из таблицы по полю slug
+
+
+class TagPost(models.Model):  # модель для тегов наследуем от класса Model
+    tag = models.CharField(max_length=100, db_index=True)  # название тега(индексированное) + max длина 100 символов
+    slug = models.SlugField(max_length=255, unique=True, db_index=True)  # поле для slug (уникален и индексирован)
+
+    def __str__(self):  # метод для отображения названия тегов
+        return self.tag
 
