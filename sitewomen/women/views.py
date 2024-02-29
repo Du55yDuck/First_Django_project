@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404  # импорт наших классов из django.http
 from django.shortcuts import render, redirect, get_object_or_404  # импорт redirect
 
-from .models import Women, Category
+from .models import Women, Category, TagPost
 
 # Наше представление в виде функции, формирующее внешний вид сайта
 
@@ -81,3 +81,17 @@ def show_category(request, cat_slug):  # ф-я для вывода катего�
 
 def page_not_found(request, exception):  # ф-я представления для несуществующих страниц(обязательный request + exc-n)
     return HttpResponseNotFound('<h1>Страница не найдена!</h1>')  # возврат экземпляра для вывода сообщения - аналог 404
+
+
+def show_tag_postlist(request, tag_slug):  # ф-я для отображения статей по определенному тегу
+    tag = get_object_or_404(TagPost, slug=tag_slug)  # берется запись из модели TagPost по slug
+    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED)  # получить все публикованные статьи из posts
+
+    data = {  # передается в шаблон
+        'title': f"Тег: {tag.tag}",  # tag.tag, так как в class TagPost аргумент назван tag
+        'menu': menu,
+        'posts': posts,
+        'cat_selected': None,  # выбранный пункт категории
+    }
+
+    return render(request, 'women/index.html', context=data)  # render + шаблон index + context
