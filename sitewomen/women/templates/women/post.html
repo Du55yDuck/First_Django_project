@@ -1,4 +1,19 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %} <! Шаблон для отображения статьи>
+
+{% block breadcrumbs %} <! блок из base.html>
+<! -- Теги -->
+{% with post.tags.all as tags %} <! post(текущ отображаемая запись из Women) выбир все теги через ОРМ и переноc в tags>
+{% if tags %} <! проверка на наличие >
+<ul class="tags-list">
+    <li>Теги:</li>
+    {% for t in tags %} <! Перебор через цикл всех прочитанных тегов и отобразить в виде ссылок>
+    <li><a href="{{t.get_absolute_url}}">{{t.tag}}</a></li>
+    {% endfor %}
+</ul>
+{% endif %}
+{% endwith %}
+{% endblock %}
+
 
 {% block content %}
 <h1>{{post.title}}</h1>
