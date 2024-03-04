@@ -65,8 +65,9 @@ class TagPost(models.Model):  # модель для тегов наследуе�
 
 
 class Husband(models.Model):  # модель поля Husband с параметрами длины и типа водимых данных
-    name = models.CharField(max_length=100)
+    name = models.CharField(max_length=100)  # поля для Husband...
     age = models.IntegerField(null=True)
+    m_count = models.IntegerField(blank=True, default=0)
 
     def __str__(self):  # возвращает имя для наглядности
         return self.name
