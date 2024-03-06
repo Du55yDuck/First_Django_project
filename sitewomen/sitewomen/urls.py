@@ -23,6 +23,7 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('women.urls')),  # Спец. Функция include позволяет подключить все маршруты автоматически. Если
     # на месте '' прописать свой индекс и еще в файле women/urls.py - то он будет добавляться к адресу автоматически
+    path("__debug__/", include("debug_toolbar.urls")),  # путь для django toolbar
 
 
 
