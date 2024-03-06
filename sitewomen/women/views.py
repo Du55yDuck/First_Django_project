@@ -11,21 +11,10 @@ menu = [{'title': "О сайте", 'url_name': 'about'},  # список со с
         {'title': "Войти", 'url_name': 'login'},
 ]
 
-data_db = [  # имитация базы данных
-    {'id': 1, 'title': 'Анджелина Джоли', 'content': '''<h1>Анджелина Джоли</h1> (англ. Angelina Jolie[7], при рождении
-    Войт (англ. Voight), ранее Джоли Питт (англ. Jolie Pitt); род. 4 июня 1975, Лос-Анджелес, Калифорния, США) — 
-    американская актриса кино, телевидения и озвучивания, кинорежиссёр, сценаристка, продюсер, фотомодель, посол доброй
-    воли ООН.
-    Обладательница премии «Оскар», трёх премий «Золотой глобус» (первая актриса в истории, три года подряд выигравшая 
-    премию) и двух «Премий Гильдии киноактёров США».''',
-     'is_published': True},
-    {'id': 2, 'title': 'Марго Робби', 'content': 'Биография Марго Робби', 'is_published': False},
-    {'id': 3, 'title': 'Джулия Робертс', 'content': 'Биография Джулии Робертс', 'is_published': True},
-]
-
 
 def index(request):  # request - ссылка на запрос HttpRequest
-    posts = Women.published.all()  # posts - реализация обращения к БД + filter для published (все публикации)
+    posts = Women.published.all().select_related('cat')  # posts - реализация обращения к БД + filter для
+    # published (все публикации) + оптимизация через select_related(жадная загрузка по внешнему ключу типа ForeignKey
 
     data = {  # словарь с данными из шаблона index.html работает с помощью render (для примера)
         'title': 'Главная страница',
@@ -68,7 +57,8 @@ def login(request):  # ф-я для авторизации
 
 def show_category(request, cat_slug):  # ф-я для вывода категории (2 независимых sql запроса для разгрузки БД)
     category = get_object_or_404(Category, slug=cat_slug)  # указать модель и критерий поиска slug
-    posts = Women.published.filter(cat_id=category.pk)  # отобрать статьи по категориям через pk
+    posts = Women.published.filter(cat_id=category.pk).select_related("cat")  # отобрать статьи по категориям через pk
+    # + select_related
 
     data = {
         'title': f'Рубрика: {category.name}',  # отображать название категории.
@@ -85,7 +75,8 @@ def page_not_found(request, exception):  # ф-я представления дл
 
 def show_tag_postlist(request, tag_slug):  # ф-я для отображения статей по определенному тегу
     tag = get_object_or_404(TagPost, slug=tag_slug)  # берется запись из модели TagPost по slug
-    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED)  # получить все публикованные статьи из posts
+    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED).select_related("cat")  # получить все публикованные
+    # статьи из posts + select_related
 
     data = {  # передается в шаблон
         'title': f"Тег: {tag.tag}",  # tag.tag, так как в class TagPost аргумент назван tag

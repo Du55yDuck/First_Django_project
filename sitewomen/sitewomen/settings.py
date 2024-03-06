@@ -27,7 +27,7 @@ DEBUG = True  # Режим отладки, True - вывод стандартн�
 # содержимое функций представления для клиента(errors - 400, 403, 404, 500)
 
 ALLOWED_HOSTS = ['127.0.0.1']  # указать наш хост для разрешения ввода изменений
-
+INTERNAL_IPS = ["127.0.0.1"]  # адрес для django toolbar
 
 # Application definition
 
@@ -40,6 +40,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',  # доп пакет для удобства отображения sql запросов
     'women.apps.WomenConfig',  # должно быть указано наше приложение!
+    "debug_toolbar",  # приложение django toolbar
 ]
 
 MIDDLEWARE = [
@@ -50,6 +51,7 @@ MIDDLEWARE = [
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
+    "debug_toolbar.middleware.DebugToolbarMiddleware",  # установка django toolbar
 ]
 
 ROOT_URLCONF = 'sitewomen.urls'
