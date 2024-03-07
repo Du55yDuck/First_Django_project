@@ -10,20 +10,23 @@ class PublishedManager(models.Manager):  # класс пользовательс
 class Women(models.Model):  # наш класс-модель с полями для таблицы
     class Status(models.IntegerChoices):  # класс для именовывания опубликованных/не опубликованных статей в виджете
         DRAFT = 0, 'Черновик'  # название-статус в виджете в виде кортежа с int
-        PUBLISHED = 1, 'Опубликовано'
+        PUBLISHED = 1, 'Опубликовано'  # - костыль в 20 строке - преобразует 1 и 0 в булевы значения
 
-    title = models.CharField(max_length=255)  # Заголовок с максимальным кол-во символов
-    slug = models.SlugField(max_length=255, unique=True, db_index=True)  # поле для связки с slug в urls
-    content = models.TextField(blank=True)  # Поле для текста(статьи) с доступно пустым
-    time_create = models.DateTimeField(auto_now_add=True)  # Поле с авто заполнением времени в момент доб new записи
-    time_update = models.DateTimeField(auto_now=True)  # Поле меняющееся при каждом изменении
-    is_published = models.BooleanField(choices=Status.choices, default=Status.DRAFT)  # Поле публикации + choices
-    cat = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='posts')  # параметр для связки
+    title = models.CharField(max_length=255, verbose_name="Заголовок")  # Заголовок с максимальным кол-во символов
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="Slug")  # связка с slug в urls
+    content = models.TextField(blank=True, verbose_name="Текст статьи")  # Поле для текста(статьи) с доступно пустым
+    time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")  # авто заполнение времени
+    time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")  # меняющееся при каждом изменении
+    is_published = models.BooleanField(choices=tuple(map(lambda x: (bool(x[0]), x[1]), Status.choices)),  # Публикация +
+                                       default=Status.DRAFT, verbose_name="Статус")  # костыль "опубликовано" в админке
+    cat = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='posts', verbose_name="Категории")
     # вторичной модели(women) к первичной (category) через ForeignKey + 'Category'(т.к. задан раньше) +
     # on_delete=..PROTECT(запрет на удаление постов) + related_name с собственным названием для привязки к вторич модели
-    tags = models.ManyToManyField('TagPost', blank=True, related_name='tags')  # параметр для связи many-to-many
-    husband = models.OneToOneField('Husband', on_delete=models.SET_NULL, null=True, blank=True, related_name='wuman')
-    # Параметр husband для связи one-to-one модели Women со своими свойствами(пустые поля, значения null и т. д.)
+    tags = models.ManyToManyField('TagPost', blank=True, related_name='tags', verbose_name="Теги")  # many-to-many
+    husband = models.OneToOneField('Husband', on_delete=models.SET_NULL,
+                                   null=True, blank=True, related_name='wuman', verbose_name="Муж")
+    # Параметр husband для связи one-to-one модели Women со своими свойствами(пустые поля, значения null и т. д.) +
+    # ко всем полям добавлен verbose_name для отображения в админ панели.
 
     objects = models.Manager()  # пользовательский менеджер по умолчанию (работает, если published не активен)
     published = PublishedManager()  # пользовательский менеджер публикаций(да/нет)
@@ -32,6 +35,8 @@ class Women(models.Model):  # наш класс-модель с полями д�
         return self.title
 
     class Meta:  # спец класс для сортировки полей модели Women с методом ordering и indexes + порядок сортировки
+        verbose_name = "Известные женщины"  # заголовок для админки
+        verbose_name_plural = "Известные женщины"  # заголовок во множественном числе (без -s)
         ordering = ['-time_create']  # порядок сортировки
         indexes = [  # список индексированных полей для ускорения сортировки
             models.Index(fields=['-time_create'])  # class Meta - для управления сортировкой на уровне класса
@@ -42,8 +47,12 @@ class Women(models.Model):  # наш класс-модель с полями д�
 
 
 class Category(models.Model):  # Модель Category в виде класса для связи many-to-one (нашей первичной модели category)
-    name = models.CharField(max_length=100, db_index=True)  # имя категории + индексированное поле
+    name = models.CharField(max_length=100, db_index=True, verbose_name="Категория")  # имя категории + индекс-е поле
     slug = models.SlugField(max_length=255, unique=True, db_index=True)  # поле для обращения по slug + index
+
+    class Meta:  # мета класс для вывода класса Category в админ панель
+        verbose_name = "Категория"
+        verbose_name_plural = "Категории"
 
     def __str__(self):  # метод вывода информации
         return self.name
@@ -60,7 +69,7 @@ class TagPost(models.Model):  # модель для тегов наследуе�
     def __str__(self):  # метод для отображения названия тегов
         return self.tag
 
-    def get_absolute_url(self):  # метод возвращает url для конкретного тега
+    def get_absolute_url(self):  # метод возвращает url для конкретного тега(также отвечает в админке-смотреть на сайте)
         return reverse('tag', kwargs={'tag_slug': self.slug})  # slug берется из бд и формируется маршрут
 
 
