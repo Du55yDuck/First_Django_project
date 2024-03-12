@@ -123,7 +123,8 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/5.0/howto/static-files/
 
 STATIC_URL = 'static/'  # префикс к URL-адресам
-# STATICFILES_DIRS =[ BASE_DIR / ..'static'...] - если нужно указать не стандартные маршруты для static-файлов
+STATICFILES_DIRS = [
+    BASE_DIR / 'static', ]  # указать не стандартные маршруты для static-каталогов/файлов
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
