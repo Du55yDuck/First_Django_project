@@ -43,8 +43,8 @@ def show_post(request, post_slug):  # ф-я для организации ссы
     return render(request, 'women/post.html', data)  # возвращает шаблон post.html и словарь data
 
 
-def addpage(request):  # ф-я для добавления контента
-    return HttpResponse("Добавление статьи")
+def addpage(request):  # ф-я для добавления контента (возвращает шаблон addpage) + request.GET/POST - показывает инфо
+    return render(request, 'women/addpage.html', {'menu': menu, 'title': 'Добавление статьи'})
 
 
 def contact(request):  # ф-я для контактов
