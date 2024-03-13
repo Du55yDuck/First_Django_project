@@ -1,6 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404  # импорт наших классов из django.http
 from django.shortcuts import render, redirect, get_object_or_404  # импорт redirect
 
+from .forms import AddPostForm
 from .models import Women, Category, TagPost
 
 # Наше представление в виде функции, формирующее внешний вид сайта
@@ -44,7 +45,19 @@ def show_post(request, post_slug):  # ф-я для организации ссы
 
 
 def addpage(request):  # ф-я для добавления контента (возвращает шаблон addpage) + request.GET/POST - показывает инфо
-    return render(request, 'women/addpage.html', {'menu': menu, 'title': 'Добавление статьи'})
+    if request.method == 'POST':  # Проверка на POST запрос
+        form = AddPostForm(request.POST)  # экземпляр класса нашей формы для отображения в шаблоне addpage.html + данные
+        if form.is_valid():  # Если проверка на уровне сервера проходит с помощью метода is_valid
+            print(form.cleaned_data)  # выводит очищенные данные в консоль
+    else:
+        form = AddPostForm()  # Иначе form с GET запросом возвращает form с пустыми полями(GET - уровень браузера)
+
+    data = {  # вспомогательный словарь с данными
+        'menu': menu,
+        'title': 'Добавление статьи',
+        'form': form  # содержит либо form с данными(если POST-запрос), либо с пустыми полями(если GET-запрос)
+    }
+    return render(request, 'women/addpage.html', data)  # передача словаря
 
 
 def contact(request):  # ф-я для контактов
