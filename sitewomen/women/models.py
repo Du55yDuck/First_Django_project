@@ -1,3 +1,4 @@
+from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.db import models
 from django.template.defaultfilters import slugify
 from django.urls import reverse
@@ -14,12 +15,17 @@ class Women(models.Model):  # наш класс-модель с полями д�
         PUBLISHED = 1, 'Опубликовано'  # - костыль в 20 строке - преобразует 1 и 0 в булевы значения
 
     title = models.CharField(max_length=255, verbose_name="Заголовок")  # Заголовок с максимальным кол-во символов
-    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="Slug")  # связка с slug в urls
+    slug = models.SlugField(max_length=255, unique=True, db_index=True, verbose_name="Slug",  # связка с slug в urls
+                            validators=[  # стандартные валидаторы для slug + сообщение
+                                MinLengthValidator(5, message="Минимум 5 символов"),
+                                MaxLengthValidator(100, message="Максимум 100 символов")])
+
     content = models.TextField(blank=True, verbose_name="Текст статьи")  # Поле для текста(статьи) с доступно пустым
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")  # авто заполнение времени
     time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")  # меняющееся при каждом изменении
     is_published = models.BooleanField(choices=tuple(map(lambda x: (bool(x[0]), x[1]), Status.choices)),  # Публикация +
                                        default=Status.DRAFT, verbose_name="Статус")  # костыль "опубликовано" в админке
+
     cat = models.ForeignKey('Category', on_delete=models.PROTECT, related_name='posts', verbose_name="Категории")
     # вторичной модели(women) к первичной (category) через ForeignKey + 'Category'(т.к. задан раньше) +
     # on_delete=..PROTECT(запрет на удаление постов) + related_name с собственным названием для привязки к вторич модели
