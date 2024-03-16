@@ -2,4 +2,10 @@
 
 {% block content %} <! Блок наследуется из базового файла-шаблонов base>
 <h1>{{ title }}</h1> <! Наша переменная, содержащаяся в ф-ии представления index>
+<form action="" method="post" enctype="multipart/form-data"> <! Form + метод передачи post, enctype="multypart.>
+<! - необходим при загрузки файлов, иначе файлы не будут загружаться на сервер >
+    {% csrf_token %}  <! Обязателен при методе передачи post >
+    {{ form.as_p }}  <! Отобразить форму через as_p >
+    <p><button type="submit">Отправить</button></p>  <! Кнопка - отправить >
+</form>
 {% endblock %}
