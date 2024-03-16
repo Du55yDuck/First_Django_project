@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404  # импорт наших классов из django.http
 from django.shortcuts import render, redirect, get_object_or_404  # импорт redirect
 
-from .forms import AddPostForm
+from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost
 
 # Наше представление в виде функции, формирующее внешний вид сайта
@@ -27,8 +27,22 @@ def index(request):  # request - ссылка на запрос HttpRequest
     # (context=data - 3 аргумент с явным параметром) (нужно прописывать путь!)
 
 
+def handle_uploaded_file(f):  # Спец метод для ручной загрузки файлов по частям с помощью объекта f
+    with open(f"uploads/{f.name}", "wb+") as destination:  # открыть f и прописать маршрут места хранения файла + имя
+        for chunk in f.chunks():
+            destination.write(chunk)  # запись фрагментов файла до полной загрузки через цикл
+
+
 def about(request):  # ф-я представления about(о сайте) + render ( 3 - аргумент в виде словаря в шаблоне about)
-    return render(request, 'women/about.html', {'title': 'О сайте', 'menu': menu})  # путь к шаблону
+    if request.method == 'POST':  # Если метод загрузки == POST, то def handle... запускается и далее...
+        form = UploadFileForm(request.POST, request.FILES)  # форма с данными(коллекции: POST + FILES(работа с файлами))
+        if form.is_valid():  # проверка на валидность заполнения формы (загрузка на сервер)
+            handle_uploaded_file(form.cleaned_data['file'])  # с помощью def handle..- через объект request далее к
+        # коллекции FILES обращаемся к ключу file_upload (прописанного в шаблоне about.html)
+    else:
+        form = UploadFileForm()  # Пустая форма для загрузки файла
+    return render(request, 'women/about.html',
+                  {'title': 'О сайте', 'menu': menu, 'form': form})  # путь к шаблону + передача формы в шаблоны
     # about.html !(Джанго начинает поиск сверху)!
 
 

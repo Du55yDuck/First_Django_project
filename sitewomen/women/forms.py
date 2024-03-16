@@ -56,3 +56,5 @@ class AddPostForm(forms.ModelForm):  # класс связан с моделью
     #         raise ValidationError("Должны присутствовать только русские символы, цифры, дефис, пробел.")  # исключение
 
 
+class UploadFileForm(forms.Form):  # класс не привязан к модели и формируется на базе Form(позволяет загружать файл)
+    file = forms.ImageField(label='Файл')  # переменная file + тип поля(для img) + именная метка
