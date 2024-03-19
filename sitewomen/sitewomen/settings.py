@@ -127,6 +127,8 @@ STATICFILES_DIRS = [
     BASE_DIR / 'static', ]  # указать не стандартные маршруты для static-каталогов/файлов
 
 MEDIA_ROOT = BASE_DIR / 'media'  # общий каталог для загруженных файлов
+MEDIA_URL = '/media/'  # авто добавления префикса media ко всем загружаемым медиа-файлам для добавления и связи маршрута
+# с каталогом медеи-файлов общего проекта.
 
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field

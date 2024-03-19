@@ -14,8 +14,11 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
+from django.conf.urls.static import static
 from django.contrib import admin
 from django.urls import path, include  # импорт include
+
+from sitewomen import settings
 from women.views import page_not_found  # импорт page_not_found(после его представления!)
 # + папку sitewomen сделали sourse root(рабочий каталог) из-за конфликта в import
 
@@ -24,10 +27,12 @@ urlpatterns = [
     path('', include('women.urls')),  # Спец. Функция include позволяет подключить все маршруты автоматически. Если
     # на месте '' прописать свой индекс и еще в файле women/urls.py - то он будет добавляться к адресу автоматически
     path("__debug__/", include("debug_toolbar.urls")),  # путь для django toolbar
-
-
-
 ]
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Связка маршрута MEDIA_URL с
+    # общим каталогом Sitewomen/media (MEDIA_ROOT) в режиме Debug для корректной работы сервера при обращении в этом
+    # режиме и в режиме работы.
 
 handler404 = page_not_found  # обработчик handler404 + ссылка на нашу ф-ию для вывода нашего сообщения при ошибке
 

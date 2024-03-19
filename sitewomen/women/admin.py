@@ -1,4 +1,6 @@
 from django.contrib import admin, messages
+from django.utils.safestring import mark_safe
+
 from .models import Women, Category
 
 
@@ -21,14 +23,14 @@ class MarriedFilter(admin.SimpleListFilter):  # класс для определ
 
 @admin.register(Women)  # декоратор register для регистрации админки + Women, наследуем от admin
 class WomenAdmin(admin.ModelAdmin):  # класс для управления админ панелью со своими атрибутами
-    fields = ['title', 'slug', 'content', 'cat', 'husband', 'tags']  # атрибут для редактора статей с указанными полями
-    # exclude = ['tags', 'is_published']  # атрибут для исключения указанных полей
-    # readonly_fields = ['slug']  # поля только для чтения
+    fields = ['title', 'slug', 'content', 'photo', 'post_photo', 'cat', 'husband', 'tags']  # Атриб для редактора статей
+    # exclude = ['tags', 'is_published']  # атрибут для исключения указанных полей                      + указанные поля
+    readonly_fields = ['post_photo']  # поля только для чтения + отображением мини-фото при добавлении
     prepopulated_fields = {"slug": ("title", )}  # атр-т для авто заполнения полей на основе других полей(slug по title)
     # filter_horizontal = ['tags'] настройка указанных полей в доп горизонтальном поле
     filter_vertical = ['tags']  # настройка указанных полей в доп вертикальном поле
 
-    list_display = ('title', 'time_create', 'is_published', 'cat', 'brief_info')  # поля для админ панели
+    list_display = ('title', 'post_photo', 'time_create', 'is_published', 'cat')  # поля для админ панели
     list_display_links = ('title',)  # кликабельные поля(не может быть одновременно редактируемым и наоборот)
     ordering = ['-time_create', 'title',]  # сорт-ка только для админки по указан полям(2 поля, если 1 не соответствует)
     list_editable = ('is_published',)  # редактируемое поле Статус(is_published)
@@ -39,10 +41,13 @@ class WomenAdmin(admin.ModelAdmin):  # класс для управления а
     # lookup startswith(начало заголовка), категории + lookup name(название категории))
     list_filter = [MarriedFilter, 'cat__name', 'is_published']  # Поле для фильтра по указанным полям + ссылка на класс
     # MarriedFilter для подключения.
+    save_on_top = True  # отображение панели сохранения наверху.
 
-    @admin.display(description="Краткое описание", ordering='content')  # дек-ор меняет назв-е поля + сорт-ка по лексике
-    def brief_info(self, women: Women):  # Метод создает новое пользовательское поле, women - объект модели Women
-        return f"Описание {len(women.content)} символов."  # возвращает длину символов в статье
+    @admin.display(description="Изображение:", ordering='content')  # дек-ор меняет назв-е поля +
+    def post_photo(self, women: Women):
+        if women.photo:  # Метод создает вычисляемое пользовательское поле, women - объект модели Women
+            return mark_safe(f"<img src='{women.photo.url}' width=50>")  # mark_safe не экранирует HTML-теги, также
+        return "Без фото"  # указать путь к мини-фото с шириной=50, либо выводит - Без фото.
 
     @admin.action(description="Опубликовать выбранные записи")  # декоратор меняющий название поля
     def set_published(self, request, queryset):  # метод для добавления действия в админ панель из выпадающего меню.
