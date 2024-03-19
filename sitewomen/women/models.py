@@ -20,6 +20,8 @@ class Women(models.Model):  # наш класс-модель с полями д�
                                 MinLengthValidator(5, message="Минимум 5 символов"),
                                 MaxLengthValidator(100, message="Максимум 100 символов")])
 
+    photo = models.ImageField(upload_to="photos/%y/%m/%d", default=None,  # поле для загрузки фото для постов +
+                              blank=True, null=True, verbose_name="Фото")  # параметры загрузки(каталог, имя...)
     content = models.TextField(blank=True, verbose_name="Текст статьи")  # Поле для текста(статьи) с доступно пустым
     time_create = models.DateTimeField(auto_now_add=True, verbose_name="Время создания")  # авто заполнение времени
     time_update = models.DateTimeField(auto_now=True, verbose_name="Время изменения")  # меняющееся при каждом изменении
@@ -91,5 +93,9 @@ class Husband(models.Model):  # модель поля Husband с парамет�
 
     def __str__(self):  # возвращает имя для наглядности
         return self.name
+
+
+class UploadFiles(models.Model):  # класс для загрузки файлов с использованием модели
+    file = models.FileField(upload_to='uploads_model')  # переменная с параметром(путь для загрузки файлов)
 
 
