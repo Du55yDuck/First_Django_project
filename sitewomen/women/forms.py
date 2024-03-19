@@ -32,8 +32,8 @@ class AddPostForm(forms.ModelForm):  # класс связан с моделью
 
     class Meta:  # вложенный класс Мета для привязки формы AddPostForm с моделью Women + имеет метод save()
         model = Women  # описывает связь формы с моделью Women
-        fields = ['title', 'slug', 'content', 'is_published', 'cat', 'husband', 'tags']  # все поля берутся из Women и
-        # Указываются только те поля, которые есть в Women. Желательно прописывать конкретно отображаемые поля.
+        fields = ['title', 'slug', 'content', 'photo', 'is_published', 'cat', 'husband', 'tags']  # все поля берутся из
+        # Women и указываются только те поля, которые есть в Women. Желательно прописывать конкретно отображаемые поля.
         widgets = {  # виджеты для поля заголовок и текст статьи
             'title': forms.TextInput(attrs={'class': 'form-input'}),  # поле, вид заполнения, стиль оформл-ия form-input
             'content': forms.Textarea(attrs={'cols': 50, 'rows': 5}),  # поле, вид заполнителя, 50 символов, 5 рядов

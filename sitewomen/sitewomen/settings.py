@@ -126,6 +126,8 @@ STATIC_URL = 'static/'  # префикс к URL-адресам
 STATICFILES_DIRS = [
     BASE_DIR / 'static', ]  # указать не стандартные маршруты для static-каталогов/файлов
 
+MEDIA_ROOT = BASE_DIR / 'media'  # общий каталог для загруженных файлов
+
 # Default primary key field type
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
