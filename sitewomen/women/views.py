@@ -1,5 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404  # импорт наших классов из django.http
 from django.shortcuts import render, redirect, get_object_or_404  # импорт redirect
+from django.views import View
+from django.views.generic import TemplateView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -25,6 +27,25 @@ def index(request):  # request - ссылка на запрос HttpRequest
     }
     return render(request, 'women/index.html', context=data)  # аналог кода выше, но с render
     # (context=data - 3 аргумент с явным параметром) (нужно прописывать путь!)
+
+
+class WomenHome(TemplateView):  # Пример класса TemplateView (аналог ф-ии def index)
+    template_name = 'women/index.html'  # путь к шаблону, который используется
+    extra_context = {  # позволяет передавать доп данные в шаблон(в данном - добавляет базовые поля на главную страницу)
+        'title': 'Главная страница',  # Данные в словарь можно прописать только те, которые известны на момент
+        'menu': menu,                 # определения самого класса (Динамические данные, полученные во время запроса- No)
+        'posts': Women.published.all().select_related('cat'),  # вызов и получение всех записей из модели Women
+        'cat_selected': 0,
+    }
+
+    # def get_context_data(self, **kwargs):  # метод для получения динамических данных (данные в момент запроса)
+    #     context = super().get_context_data(**kwargs)  # вызов метода get_context_data из базового класса + параметры
+    #     context['title'] = 'Главная страница'  # Далее прописываем нужные нам ключи
+    #     context['menu'] = menu
+    #     context['posts'] = Women.published.all().select_related('cat')
+    #     context['cat_selected'] = int(self.request.GET.get('cat_id', 0))  # Получение cat_selected (выбор категории по
+    #     # cat_id через обращение к объекту request в коллекции GET через шаблон
+    #     return context
 
 
 # def handle_uploaded_file(f):  # Спец метод для ручной загрузки файлов по частям с помощью объекта f
@@ -79,6 +100,29 @@ def addpage(request):  # ф-я для добавления контента (в�
         'form': form  # содержит либо form с данными(если POST-запрос), либо с пустыми полями(если GET-запрос)
     }
     return render(request, 'women/addpage.html', data)  # передача словаря
+
+
+class AddPage(View):  # Пример класса представления View. Имеет методы GET/POST... Замена ф-ии выше.
+    def get(self, request):  # метод get с обязательным параметром request
+        form = AddPostForm()  # создать пустую форму
+        data = {
+            'menu': menu,
+            'title': 'Добавление статьи',
+            'form': form
+        }
+        return render(request, 'women/addpage.html', data)
+
+    def post(self, request):  # метод post
+        form = AddPostForm(request.POST, request.FILES)  # См комментарии в def addpage
+        if form.is_valid():
+            form.save()
+            return redirect('home')
+        data = {
+            'menu': menu,
+            'title': 'Добавление статьи',
+            'form': form
+        }
+        return render(request, 'women/addpage.html', data)
 
 
 def contact(request):  # ф-я для контактов
