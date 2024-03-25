@@ -1,7 +1,7 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404  # импорт наших классов из django.http
 from django.shortcuts import render, redirect, get_object_or_404  # импорт redirect
 from django.views import View
-from django.views.generic import TemplateView, ListView
+from django.views.generic import TemplateView, ListView, DetailView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -72,17 +72,32 @@ def about(request):  # ф-я представления about(о сайте) + r
     # about.html !(Джанго начинает поиск сверху)!
 
 
-def show_post(request, post_slug):  # ф-я для организации ссылки post_slug
-    post = get_object_or_404(Women, slug=post_slug)  # выводит одну страницу по slug или 404 + импорт Women
+# def show_post(request, post_slug):  # ф-я для организации ссылки post_slug
+#     post = get_object_or_404(Women, slug=post_slug)  # выводит одну страницу по slug или 404 + импорт Women
+#
+#     data = {  # передает заголовок статьи, меню, страницу
+#         'title': post.title,
+#         'menu': menu,
+#         'post': post,
+#         'cat_selected': 1,
+#     }
+#     return render(request, 'women/post.html', data)  # возвращает шаблон post.html и словарь data
 
-    data = {  # передает заголовок статьи, меню, страницу
-        'title': post.title,
-        'menu': menu,
-        'post': post,
-        'cat_selected': 1,
-    }
-    return render(request, 'women/post.html', data)  # возвращает шаблон post.html и словарь data
+class ShowPost(DetailView):  # класс-аналог def show_post(отображает выбранный пост)
+    # model = Women  # модель из которой берется текущая статья
+    template_name = 'women/post.html'  # используемый шаблон
+    slug_url_kwarg = 'post_slug'  # явно указана переменная, по которой вызывается статья(указать в urls.py - маршрутах)
+    context_object_name = 'post'  # переменная из шаблона post.html
 
+    def get_context_data(self, **kwargs):  # метод для вывода актуального заголовка в шапке выбранного поста
+        context = super().get_context_data(**kwargs)  # вызов метода из базового класса
+        context['title'] = context['post'].title  # Заголовок из переменной context['post'].title
+        context['menu'] = menu
+        return context
+
+    def get_object(self, queryset=None):  # отобразить статьи только из опубликованных записей, иначе исключение 404
+        return get_object_or_404(Women.published, slug=self.kwargs[self.slug_url_kwarg])  # Women.published - менеджер
+    # записей(только публикованные), по slug-у через переменную slug_url_kwargs из ShowPost
 
 # def addpage(request):  # ф-я для добавления контента (возвращает шаблон addpage) + request.GET/POST - показывает инфо
 #     if request.method == 'POST':  # Проверка на POST запрос
@@ -174,16 +189,32 @@ def page_not_found(request, exception):  # ф-я представления дл
     return HttpResponseNotFound('<h1>Страница не найдена!</h1>')  # возврат экземпляра для вывода сообщения - аналог 404
 
 
-def show_tag_postlist(request, tag_slug):  # ф-я для отображения статей по определенному тегу
-    tag = get_object_or_404(TagPost, slug=tag_slug)  # берется запись из модели TagPost по slug
-    posts = tag.tags.filter(is_published=Women.Status.PUBLISHED).select_related("cat")  # получить все публикованные
-    # статьи из posts + select_related
+class TagPostList(ListView):  # класс-аналог def show_tag_postlist(отображает статью по выбранному тегу)
+    template_name = 'women/index.html'  # путь к шаблону
+    context_object_name = 'posts'  # использовать переменную posts из шаблона
+    allow_empty = False  # 404 при не верном slug
 
-    data = {  # передается в шаблон
-        'title': f"Тег: {tag.tag}",  # tag.tag, так как в class TagPost аргумент назван tag
-        'menu': menu,
-        'posts': posts,
-        'cat_selected': None,  # выбранный пункт категории
-    }
+    def get_context_data(self, *, object_list=None, **kwargs):  # метод для получения динамических данных
+        context = super().get_context_data(**kwargs)  # вызов метода get_context_data из базового класса + параметры
+        tag = TagPost.objects.get(slug=self.kwargs['tag_slug'])
+        context['title'] = 'Тег: ' + tag.tag  # Далее прописываем нужные нам ключи
+        context['menu'] = menu
+        context['cat_selected'] = None
+        return context
 
-    return render(request, 'women/index.html', context=data)  # render + шаблон index + context
+    def get_queryset(self):  # выбор статей по указанным тегам
+        return Women.published.filter(tags__slug=self.kwargs['tag_slug']).select_related('cat')
+
+# def show_tag_postlist(request, tag_slug):  # ф-я для отображения статей по определенному тегу
+#     tag = get_object_or_404(TagPost, slug=tag_slug)  # берется запись из модели TagPost по slug
+#     posts = tag.tags.filter(is_published=Women.Status.PUBLISHED).select_related("cat")  # получить все публикованные
+#     # статьи из posts + select_related
+#
+#     data = {  # передается в шаблон
+#         'title': f"Тег: {tag.tag}",  # tag.tag, так как в class TagPost аргумент назван tag
+#         'menu': menu,
+#         'posts': posts,
+#         'cat_selected': None,  # выбранный пункт категории
+#     }
+#
+#     return render(request, 'women/index.html', context=data)  # render + шаблон index + context
