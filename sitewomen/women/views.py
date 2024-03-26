@@ -1,7 +1,8 @@
 from django.http import HttpResponse, HttpResponseNotFound, Http404  # импорт наших классов из django.http
 from django.shortcuts import render, redirect, get_object_or_404  # импорт redirect
+from django.urls import reverse_lazy
 from django.views import View
-from django.views.generic import TemplateView, ListView, DetailView
+from django.views.generic import TemplateView, ListView, DetailView, FormView
 
 from .forms import AddPostForm, UploadFileForm
 from .models import Women, Category, TagPost, UploadFiles
@@ -122,27 +123,42 @@ class ShowPost(DetailView):  # класс-аналог def show_post(отобр�
 #     return render(request, 'women/addpage.html', data)  # передача словаря
 
 
-class AddPage(View):  # Пример класса представления View. Имеет методы GET/POST... Замена ф-ии выше.
-    def get(self, request):  # метод get с обязательным параметром request
-        form = AddPostForm()  # создать пустую форму
-        data = {
-            'menu': menu,
-            'title': 'Добавление статьи',
-            'form': form
-        }
-        return render(request, 'women/addpage.html', data)
+# class AddPage(View):  # Пример класса представления View. Имеет методы GET/POST... Замена ф-ии выше.
+#     def get(self, request):  # метод get с обязательным параметром request
+#         form = AddPostForm()  # создать пустую форму
+#         data = {
+#             'menu': menu,
+#             'title': 'Добавление статьи',
+#             'form': form
+#         }
+#         return render(request, 'women/addpage.html', data)
+#
+#     def post(self, request):  # метод post
+#         form = AddPostForm(request.POST, request.FILES)  # См комментарии в def addpage
+#         if form.is_valid():
+#             form.save()
+#             return redirect('home')
+#         data = {
+#             'menu': menu,
+#             'title': 'Добавление статьи',
+#             'form': form
+#         }
+#         return render(request, 'women/addpage.html', data)
 
-    def post(self, request):  # метод post
-        form = AddPostForm(request.POST, request.FILES)  # См комментарии в def addpage
-        if form.is_valid():
-            form.save()
-            return redirect('home')
-        data = {
-            'menu': menu,
-            'title': 'Добавление статьи',
-            'form': form
-        }
-        return render(request, 'women/addpage.html', data)
+class AddPage(FormView):  # Класс-аналог класса(View) и ф-ии выше. Class типа (FormView) использует спец переменную
+    # form в шаблоне addpage.html для взаимодействия. Иначе необходимо вносить изменения в шаблон.
+    form_class = AddPostForm  # ссылка на сам класс, а не на объект класса ()
+    template_name = 'women/addpage.html'  # имя шаблона с которым взаимодействует класс.
+    success_url = reverse_lazy('home')  # URL на который переходим после успешной отправки и обработки данной формы
+    # (главная страница) + reverse_lazy выстраивает маршрут в момент необходимости(используется часто, вместо reverse)
+    extra_context = {  # отображение кнопок в шапке главного поля(страница добавить статью)
+        'menu': menu,
+        'title': 'Добавление статьи',
+    }
+
+    def form_valid(self, form):  # спец метод вызывается, если все поля формы заполнены корректно.
+        form.save()  # сохраняет новую запись в БД
+        return super().form_valid(form)  # Вызов из базового класса с методом form_valid(ссылающийся на объект)
 
 
 def contact(request):  # ф-я для контактов
