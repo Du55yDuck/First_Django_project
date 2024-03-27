@@ -15,4 +15,6 @@ urlpatterns = [
     path('post/<slug:post_slug>/', views.ShowPost.as_view(), name='post'),  # маршрут для шаблона и class ShowPost
     path('category/<slug:cat_slug>/', views.WomenCategory.as_view(), name='category'),  # марш с префиксом для category
     path('tag/<slug:tag_slug>/', views.TagPostList.as_view(), name='tag'),  # маршрут tag/<slug..+ class TagPostList
+    path('edit/<slug:slug>/', views.UpdatePage.as_view(), name='edit_page'),  # маршрут для класса UpdatePage по slug-у
 ]
+
