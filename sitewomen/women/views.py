@@ -1,3 +1,4 @@
+from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound  # импорт наших классов из django.http
 from django.shortcuts import render, get_object_or_404  # импорт redirect
 from django.urls import reverse_lazy
@@ -23,15 +24,14 @@ class WomenHome(DataMixin, ListView):  # класс типа ListView для о�
 
 
 def about(request):  # ф-я представления about(о сайте) + render ( 3 - аргумент в виде словаря в шаблоне about)
-    if request.method == 'POST':  # Если метод загрузки == POST, то def handle... запускается и далее...
-        form = UploadFileForm(request.POST, request.FILES)  # форма с данными(коллекции: POST + FILES(работа с файлами))
-        if form.is_valid():  # проверка на валидность заполнения формы (загрузка на сервер)
-            fp = UploadFiles(file=form.cleaned_data['file'])  # создание новой записи с помощью модели (создаем новый
-            fp.save()  # объект этой модели + сохраняем его.
-    else:
-        form = UploadFileForm()  # Пустая форма для загрузки файла
+    contact_list = Women.published.all()  # Взять все опубликованные записи из модели Women
+    paginator = Paginator(contact_list, 3)  # Класс Paginator, все опубл записи + кол-во элементов на странице
+
+    page_number = request.GET.get('page')  # Через GET-запрос получить номер ('page') для отображения текущей страницы
+    page_obj = paginator.get_page(page_number)  # получить текущую страницу по номеру (page_number)
+
     return render(request, 'women/about.html',
-                  {'title': 'О сайте', 'form': form})  # путь к шаблону + передача формы в шаблоны
+                  {'title': 'О сайте', 'page_obj': page_obj})  # путь к шаблону + передача формы в шаблоны
     # about.html !(Джанго начинает поиск сверху)!
 
 
