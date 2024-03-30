@@ -1,6 +1,6 @@
 {% extends "admin/base.html" %}
 
-{% load static %}  <! загрузка нашего каталога static >
+{% load static %}  <!-- загрузка нашего каталога static -->
 {% block title %}{% if subtitle %}{{ subtitle }} | {% endif %}{{ title }} | {{ site_title|default:_('Django site admin') }}{% endblock %}
 
 {% block branding %}
@@ -12,6 +12,6 @@
 
 {% block nav-global %}{% endblock %}
 
-{% block extrastyle %}  <! блок отвечающий за подключения css файлов для собственной стилизации >
-<link rel="stylesheet" href="{% static 'css/admin/admin.css' %}">  <!ссылка на наш файл css >
+{% block extrastyle %}  <!-- блок отвечающий за подключения css файлов для собственной стилизации -->
+<link rel="stylesheet" href="{% static 'css/admin/admin.css' %}">  <!--ссылка на наш файл css -->
 {% endblock %}

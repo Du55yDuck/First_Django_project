@@ -1,22 +1,54 @@
-{% extends 'base.html' %}
+{% extends 'base.html' %}  <!-- index.html - шаблон отображающий главную страницу -->
 
 {% block content %}
 <ul class="list-articles">
-	{% for p in posts %} <! примеры for и if>
-			<li><div class="article-panel"> <! Оформление с помощью div >
-	<p class="first">Категория: {{p.cat.name}}</p> <! Обращение к p.cat и отобразить название категории через models.py>
-	<p class="last">Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</p> <! Отображение даты и времени>
+	{% for p in posts %} <!-- примеры for и if-->
+			<li><div class="article-panel"> <!-- Оформление с помощью div -->
+	<p class="first">Категория: {{p.cat.name}}</p> <!-- Обращение к p.cat и отобразить название категории через models.py-->
+	<p class="last">Дата: {{p.time_update|date:"d-m-Y H:i:s"}}</p> <!-- Отображение даты и времени-->
 	</div>
-{% if p.photo %} <! Если фото ссылается на существующее изображение - отобразить мини-фото по указанному адресу >
+{% if p.photo %} <!-- Если фото ссылается на существующее изображение - отобразить мини-фото по указанному адресу -->
         <p><img class="img-article-left thumb" src="{{p.photo.url}}"></p>
 {% endif %}
 				<h2>{{p.title}}</h2>
-    {% autoescape off %} <! Тэг управляющий за автоматическое экранирование внутри блока>
-	{{p.content|linebreaks|truncatewords:40}} <! linebreaks - фильтр переноса на след строку и ограничитель символов>
+    {% autoescape off %} <!-- Тэг управляющий за автоматическое экранирование внутри блока -->
+	{{p.content|linebreaks|truncatewords:40}} <!-- linebreaks - фильтр переноса на след строку и ограничитель символов-->
     {% endautoescape %}
 			<div class="clear"></div>
-			<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать пост</a></p> <! Реализация ссылки post>
-			</li> <! класс + ссылка на post(кнопка читать статью) + ссылка на метод get_absolut_url
+			<p class="link-read-post"><a href="{{ p.get_absolute_url }}">Читать пост</a></p> <!-- Реализация ссылки post-->
+			</li> <!-- класс + ссылка на post(кнопка читать статью) + ссылка на метод get_absolut_url -->
 	{% endfor %}
 </ul>
+{% endblock %}
+
+
+{% block navigation %}  <!-- Переопределение блока навигации из базового шаблона-->
+{% if page_obj.has_other_pages %}  <!-- Проверка на наличие следующей страницы(убрать навигацию, если страница одна -->
+<nav class="list-pages">  <!-- Стиль страницы (передаются в ccs файле) -->
+	<ul>
+		{% if page_obj.has_previous %}  <!-- Проверка на существование предыдущей страницы -->
+		<li class="page-num">  <!-- Стиль кнопки перехода на предыдущую страницу -->
+			<a href="?page={{ page_obj.previous_page_number }}">&lt;</a>  <!-- Ссылка + номер предыдущей страницы -->
+		</li>
+		{% endif %}
+
+		{% for p in paginator.page_range %} <!-- Цикл перебирает в пагинаторе итерированные объекты(номер страницы) -->
+		{% if page_obj.number == p %}  <!-- Если текущая страница == p, то номер страницы отображать в виде текста -->
+		<li class="page-num page-num-selected">{{ p }}</li>  <!-- Стиль отображения текста номера страницы -->
+		{% elif p >= page_obj.number|add:-2 and p <= page_obj.number|add:2 %}  <!-- Диапазон отображения страниц от текущей
+		страницы две влево и две вправо (|add:2 или |add:-2 позволяет +2 и -2 от текущего номера страницы -->
+		<li class="page-num">  <!-- Стиль нумерации страниц -->
+			<a href="?page={{ p }}">{{ p }}</a>  <!-- Формирование ссылок - к запросу page + номер стр-ы и отображение-->
+		</li>
+		{% endif %}
+		{% endfor %}
+
+		{% if page_obj.has_next %} <!-- Проверка на наличие следующей страницы -->
+		<li class="page-num">  <!-- Стиль кнопки перехода на следующую страницу -->
+			<a href="?page={{ page_obj.next_page_number }}">&gt;</a>  <!-- Ссылка + номер следующей страницы -->
+		</li>
+		{% endif %}
+	</ul>
+</nav>
+{% endif %}
 {% endblock %}
