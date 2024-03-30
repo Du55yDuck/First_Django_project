@@ -1,16 +1,16 @@
-{% extends 'base.html' %} <! тэг extends + путь к базовому файлу-шаблонов base>
+{% extends 'base.html' %} <!-- тэг extends + путь к базовому файлу-шаблонов base-->
 
-{% block content %} <! Блок наследуется из базового файла-шаблонов base>
-<h1>{{ title }}</h1> <! Наша переменная, содержащаяся в ф-ии представления about>
-{% for item in page_obj %}  <! Перебор элементов страницы через page_obj с помощью for >
-<p>{{ item.pk }}: {{ item.title }}</p>  <! item(объект класса Women) Вывод итерируемого элемента + pk >
+{% block content %} <!-- Блок наследуется из базового файла-шаблонов base-->
+<h1>{{ title }}</h1> <!-- Наша переменная, содержащаяся в ф-ии представления about-->
+{% for item in page_obj %}  <!-- Перебор элементов страницы через page_obj с помощью for -->
+<p>{{ item.pk }}: {{ item.title }}</p>  <!-- item(объект класса Women) Вывод итерируемого элемента + pk -->
 {% endfor %}
 
 <nav>
-    <ul> <! Маркерованный список>
-        {% for p in page_obj.paginator.page_range %} <! Ите-р page_range обращается к объекту paginator через page_obj >
+    <ul> <!-- Маркерованный список-->
+        {% for p in page_obj.paginator.page_range %} <!-- Ите-р page_range обращ-я к объекту paginator через page_obj-->
         <li>
-            <a href="?page={{ p }}">{{p}}</a> <! Формирование ссылки - к запросу page + номер страницы и отображение >
+            <a href="?page={{ p }}">{{ p }}</a> <!-- Формирование ссылки - к запросу page + номер страницы и отображ-е -->
         </li>
         {% endfor %}
     </ul>
