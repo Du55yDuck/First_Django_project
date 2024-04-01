@@ -26,12 +26,13 @@ urlpatterns = [
     path('admin/', admin.site.urls),
     path('', include('women.urls')),  # Спец. Функция include позволяет подключить все маршруты автоматически. Если
     # на месте '' прописать свой индекс и еще в файле women/urls.py - то он будет добавляться к адресу автоматически
+    path('users/', include('users.urls', namespace="users")),  # путь + связка с приложением users + namespace
     path("__debug__/", include("debug_toolbar.urls")),  # путь для django toolbar
 ]
 
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)  # Связка маршрута MEDIA_URL с
-    # общим каталогом Sitewomen/media (MEDIA_ROOT) в режиме Debug для корректной работы сервера при обращении в этом
+    # общим каталогом sitewomen/media (MEDIA_ROOT) в режиме Debug для корректной работы сервера при обращении в этом
     # режиме и в режиме работы.
 
 handler404 = page_not_found  # обработчик handler404 + ссылка на нашу ф-ию для вывода нашего сообщения при ошибке

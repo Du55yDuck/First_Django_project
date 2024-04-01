@@ -40,15 +40,16 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'django_extensions',  # доп пакет для удобства отображения sql запросов
     'women.apps.WomenConfig',  # должно быть указано наше приложение!
+    'users',  # приложение users для авторизации пользователей + оригинальное имя
     "debug_toolbar",  # приложение django toolbar
 ]
 
 MIDDLEWARE = [
     'django.middleware.security.SecurityMiddleware',
-    'django.contrib.sessions.middleware.SessionMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',  # SessionMiddleware - требуются для корректной работы users
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
-    'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.auth.middleware.AuthenticationMiddleware',  # AuthenticationMiddleware- аналогично SessionMiddleware
     'django.contrib.messages.middleware.MessageMiddleware',
     'django.middleware.clickjacking.XFrameOptionsMiddleware',
     "debug_toolbar.middleware.DebugToolbarMiddleware",  # установка django toolbar
