@@ -1,0 +1,12 @@
+{% extends 'base.html' %}  <!-- Наследование от базового шаблона -->
+
+{% block content %}  <!-- Переопределение блока content -->
+<h1>Авторизация</h1>
+
+<form method="post">  <!-- Форма для передачи данных методом post -->
+    {% csrf_token %}  <!-- Обязательный атрибут csrf -->
+    {{ form.as_p }}  <!-- Отображение самой формы через as_p -->
+    <p><button type="submit">Войти</button></p>
+</form>
+
+{% endblock %}
