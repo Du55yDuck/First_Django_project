@@ -13,15 +13,19 @@
 <body>
 <table class="table-page" border=0 cellpadding="0" cellspacing="0">
 <tr><td valign=top>
-{% block mainmenu %} <! Блок с названием mainmenu>
+{% block mainmenu %} <!--Блок с названием mainmenu-->
 		<div class="header">
 			<ul id="mainmenu" class="mainmenu">
 			<li class="logo"><a href="{% url 'home' %}"><div class="logo"></div></a></li>
-{% for m in menu %}
-	{% if not forloop.last %}<li>{% else %}<li class="last">{% endif %} <! Последняя строка имеет вид last>
-		<a href="{% url m.url_name %}">{{m.title}}</a></li> <! Пример оформления в столбец с помощью цикла выше>
+{% for m in mainmenu %}  <!-- Главное меню передается из шаблона конт-го проц-ра get_women_context -->
+	<li><a href="{% url m.url_name %}">{{m.title}}</a></li> <!--Пример оформления в столбец с помощью цикла выше-->
 {% endfor %}
-			</ul>
+{% if user.is_authenticated %}  <!--Если пользователь авторизован(обращение к user, благодаря context_processor.auth)-->
+	<li	class="last"> {{user.username}} | <a href="{% url 'users:logout' %}">Выйти</a></li>  <!--Логика выхода и ниже-->
+{% else %}  <!--Last + username(доступно и связано с именем пользователя в БД) + ссылка маршрута для выхода из сис-мы-->
+	<li class="last"><a href="{% url 'users:login' %}">Войти</a> | <a href="#">Регистрация</a></li>  <!--Логика ниже-->
+{% endif %}	<!--last(пункт меню в конце панели) + маршрут + кнопки: войти и регистрация -->
+			</ul>  <!--Куда перенаправлять (users:login, где users - пространство имен для всех url приложения users)-->
 			<div class="clear"></div>
 		</div>
 {% endblock mainmenu %}
@@ -32,13 +36,13 @@
 <!-- Sidebar слева -->
 	<td valign="top" class="left-chapters">
 	<ul id="leftchapters">
-		{% if cat_selected == 0 %} <! условие для проверки на выделение в категориях>
+		{% if cat_selected == 0 %} <!--условие для проверки на выделение в категориях-->
 		<li class="selected">Все категории</li>
 		{% else %}
-		<li><a href="{% url 'home' %}">Все категории</a></li> <! ссылка на домашнюю страницу по else>
+		<li><a href="{% url 'home' %}">Все категории</a></li> <!--ссылка на домашнюю страницу по else-->
 		{% endif %}
 
-		{% show_categories cat_selected %} <! реализация с помощью inclusion_tag() из list_categories>
+		{% show_categories cat_selected %} <!--реализация с помощью inclusion_tag() из list_categories-->
 
 		<li class="share">
 		<p>Наш канал</p>

@@ -3,8 +3,14 @@ from django.db.models import Count
 
 import women.views as views  # импорт из women.views с названием views
 from women.models import Category, TagPost
+from women.utils import menu
 
 register = template.Library()  # необходим для регистрации новых тегов
+
+
+@register.simple_tag  # Простой пользовательский тег для отображения меню в заголовке страниц.
+def get_menu():  # Тег передает переменную menu в контекстный процессор.
+    return menu
 
 
 @register.inclusion_tag('women/list_categories.html')  # inclusion тэг формирует шаблон и возвр-т фрагмент HTML-страницы
