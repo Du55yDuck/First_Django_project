@@ -67,9 +67,10 @@ TEMPLATES = [
         'OPTIONS': {
             'context_processors': [
                 'django.template.context_processors.debug',
-                'django.template.context_processors.request',
-                'django.contrib.auth.context_processors.auth',
+                'django.template.context_processors.request',  # обеспечивает работу переменной request в шаблонах
+                'django.contrib.auth.context_processors.auth',  # обеспечивает переменной user в шаблонах
                 'django.contrib.messages.context_processors.messages',
+                'users.context_processors.get_women_context',  # пользовательский конт проц из шаблона get_women_context
             ],
         },
     },
