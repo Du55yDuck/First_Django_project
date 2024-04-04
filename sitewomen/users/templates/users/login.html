@@ -5,7 +5,12 @@
 
 <form method="post">  <!-- Форма для передачи данных методом post -->
     {% csrf_token %}  <!-- Обязательный атрибут csrf -->
-    {{ form.as_p }}  <!-- Отображение самой формы через as_p -->
+    <input type="hidden" name="next" value="{{ next }}" />  <!--Переход на следущ указан страницу, после авторизации -->
+    <div class="form-error">{{ form.non_field_errors }}</div>  <!-- Отображение ошибок в заполнении полей формы-->
+    {% for f in form %} <!-- Цикл для перебора и отображения полей формы-->
+    <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>  <!-- Вывод текущего поля-->
+    <div class="form_error">{{ f.errors }}</div>  <!--Отображение ошибок, связанных с полями-->
+    {% endfor %}
     <p><button type="submit">Войти</button></p>
 </form>
 

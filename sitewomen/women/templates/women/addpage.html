@@ -8,7 +8,7 @@
     <div class="form-error">{{ form.non_field_errors }}</div>  <!-- Отображение ошибок в заполнении полей формы-->
     {% for f in form %} <!-- Цикл для перебора полей формы-->
     <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>  <!-- Вывод текущего поля-->
-    <div class="form_error">{{ f.errors }}</div>  <! Отображение ошибок>
+    <div class="form_error">{{ f.errors }}</div>  <!--Отображение ошибок-->
     {% endfor %}
     <p><button type="submit">Отправить</button> </p>
 </form>
