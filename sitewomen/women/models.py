@@ -1,3 +1,4 @@
+from django.contrib.auth import get_user_model
 from django.core.validators import MinLengthValidator, MaxLengthValidator
 from django.db import models
 from django.template.defaultfilters import slugify
@@ -32,10 +33,13 @@ class Women(models.Model):  # наш класс-модель с полями д�
     # вторичной модели(women) к первичной (category) через ForeignKey + 'Category'(т.к. задан раньше) +
     # on_delete=..PROTECT(запрет на удаление постов) + related_name с собственным названием для привязки к вторич модели
     tags = models.ManyToManyField('TagPost', blank=True, related_name='tags', verbose_name="Теги")  # many-to-many
-    husband = models.OneToOneField('Husband', on_delete=models.SET_NULL,
+    husband = models.OneToOneField('Husband', on_delete=models.SET_NULL,  # вывести Null в поле, где были удалены данные
                                    null=True, blank=True, related_name='wuman', verbose_name="Муж")
     # Параметр husband для связи one-to-one модели Women со своими свойствами(пустые поля, значения null и т. д.) +
     # ко всем полям добавлен verbose_name для отображения в админ панели.
+    author = models.ForeignKey(get_user_model(), on_delete=models.SET_NULL,  # атрибут связывает конкретную статью с её
+                               related_name='posts', null=True, default=None)  # Автором. Получение модели get_user_mo-l
+    # Связь ForeignKey(многие к одному) + доп параметры персонального имени, обратного связывания.
 
     objects = models.Manager()  # пользовательский менеджер по умолчанию (работает, если published не активен)
     published = PublishedManager()  # пользовательский менеджер публикаций(да/нет)
