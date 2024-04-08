@@ -6,5 +6,7 @@ app_name = "users"  # обязательное определение перем
 urlpatterns = [
     path('login/', views.LoginUser.as_view(), name='login'),  # маршрут для авторизации с помощью class LoginUser
     path('logout/', views.logout_user, name='logout'),  # маршрут для выхода с помощью ф-ии logout_user.
+    path('register/', views.register, name='register'),  # маршрут для функции регистрации пользователя
 ]
+
 

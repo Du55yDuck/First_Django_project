@@ -23,8 +23,8 @@
 {% if user.is_authenticated %}  <!--Если пользователь авторизован(обращение к user, благодаря context_processor.auth)-->
 	<li	class="last"> {{user.username}} | <a href="{% url 'users:logout' %}">Выйти</a></li>  <!--Логика выхода и ниже-->
 {% else %}  <!--Last + username(доступно и связано с именем пользователя в БД) + ссылка маршрута для выхода из сис-мы-->
-	<li class="last"><a href="{% url 'users:login' %}">Войти</a> | <a href="#">Регистрация</a></li>  <!--Логика ниже-->
-{% endif %}	<!--last(пункт меню в конце панели) + маршрут + кнопки: войти и регистрация -->
+	<li class="last"><a href="{% url 'users:login' %}">Войти</a> | <a href="{% url 'users:register' %}">Регистрация</a></li>  <!--Логика ниже-->
+{% endif %}	<!--last(пункт меню в конце панели) + маршрут + кнопки: войти и ссылка на функции для регистрации -->
 			</ul>  <!--Куда перенаправлять (users:login, где users - пространство имен для всех url приложения users)-->
 			<div class="clear"></div>
 		</div>
