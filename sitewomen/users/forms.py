@@ -1,6 +1,6 @@
 from django import forms  # импортируем из django
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 
 
 class LoginUserForm(AuthenticationForm):  # класс для авторизации (форма не связана с моделью)
@@ -15,29 +15,29 @@ class LoginUserForm(AuthenticationForm):  # класс для авторизац
         fields = ['username', 'password']  # поля для отображения
 
 
-class RegisterUserForm(forms.ModelForm):  # Класс форма для регистрации пользователя(связана с моделью)
-    username = forms.CharField(label="Логин")  # Атрибуты (поля для заполнения) - обязательное поле
-    password = forms.CharField(label="Пароль", widget=forms.PasswordInput())  # также обязательное поле
-    password2 = forms.CharField(label="Повтор пароль", widget=forms.PasswordInput())  # Поле для подтверждения пароля
+class RegisterUserForm(UserCreationForm):  # Класс форма для рег-ии пользователя(связана с моделью) тип UserCreationForm
+    username = forms.CharField(label="Логин", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    password1 = forms.CharField(label="Пароль", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    password2 = forms.CharField(label="Повтор пароль", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    # Обязательные атрибуты (поля для заполнения)
 
     class Meta:  # Вложенный класс (так как основной класс связан с моделью)
         model = get_user_model()  # Возвращает текущую модель пользователя
-        fields = ['username', 'email', 'first_name', 'last_name', 'password', 'password2']  # поля отображаемые в форме
+        fields = ['username', 'email', 'first_name', 'last_name', 'password1', 'password2']  # поля отображаемые в форме
         labels = {  # метки для полей
             'email': 'E-mail',
             'first_name': 'Имя',
             'last_name': 'Фамилия',
         }
+        widgets = {  # через атрибут widgets назначить стили для указанных полей
+            'email': forms.TextInput(attrs={'class': 'form-input'}),
+            'first_name': forms.TextInput(attrs={'class': 'form-input'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-input'}),
+        }
 
-        def clean_password2(self):  # Валидатор для проверки пароля на равенство
-            cd = self.cleaned_data  # словарь(очищенные данные)
-            if cd['password'] != cd['password2']:  # Проверка на равенство паролей
-                raise forms.ValidationError("Пароли не совпадают!")  # исключение, если пароли не совпадают
-            return cd['password']
-
-        def clean_email(self):  # Валидатор проверки на уникальность email-адреса
-            email = self.cleaned_data['email']  # данные с ключом по email
-            if get_user_model().objects.filter(email=email).exists():  # Из модели пользователя отобр польз-я по email,
-                # если такой найден, тогда отрабатывает генерация исключения
-                raise forms.ValidationError("Такой E-mail уже существует!")  # исключение, если проверка не прошла
-            return email
+    def clean_email(self):  # Валидатор проверки на уникальность email-адреса
+        email = self.cleaned_data['email']  # данные с ключом по email
+        if get_user_model().objects.filter(email=email).exists():  # Из модели пользователя отбирает польз-я по email,
+            # если такой найден, тогда отрабатывает генерация исключения
+            raise forms.ValidationError("Такой E-mail уже существует!")  # исключение, если проверка не прошла
+        return email
