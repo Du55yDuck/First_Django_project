@@ -7,6 +7,7 @@ urlpatterns = [
     path('login/', views.LoginUser.as_view(), name='login'),  # маршрут для авторизации с помощью class LoginUser
     path('logout/', views.logout_user, name='logout'),  # маршрут для выхода с помощью ф-ии logout_user.
     path('register/', views.RegisterUser.as_view(), name='register'),  # маршрут для класса регистрации пользователя
+    path('profile/', views.ProfileUser.as_view(), name='profile'),  # маршрут для класса профиля пользователя
 ]
 
 

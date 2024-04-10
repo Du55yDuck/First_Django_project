@@ -1,11 +1,11 @@
-from django.contrib.auth import logout
+from django.contrib.auth import logout, get_user_model
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.auth.views import LoginView
 from django.http import HttpResponseRedirect
-from django.shortcuts import render
 from django.urls import reverse, reverse_lazy
-from django.views.generic import CreateView
+from django.views.generic import CreateView, UpdateView
 
-from users.forms import LoginUserForm, RegisterUserForm
+from users.forms import LoginUserForm, RegisterUserForm, ProfileUserForm
 
 
 class LoginUser(LoginView):  # класс типа LoginView для авторизации(наследуется от LoginView)
@@ -29,14 +29,14 @@ class RegisterUser(CreateView):  # Класс аналог def register. Про�
     success_url = reverse_lazy('users:login')  # маршрут для перенаправления пользователя после успешной регистрации.
 
 
-# def register(request):  # ф-я для регистрации
-#     if request.method == 'POST':  # Если метод передачи POST
-#         form = RegisterUserForm(request.POST)  # Создать заполненную форму с указанными данными
-#         if form.is_valid():  # проверка на корректность заполненности всех полей
-#             user = form.save(commit=False)  # не сохранять в БД
-#             user.set_password(form.cleaned_data['password'])  # спец метод set_password шифрует пароль и заносит его в
-#             user.save()  # атрибут RegisterUserForm -> password. Далее сохранение в БД
-#             return render(request, 'users/register_done.html')  # указать шаблон
-#     else:  # Иначе сформировать пустую форму
-#         form = RegisterUserForm()  # объект формы RegisterUserForm()
-#     return render(request, 'users/register.html', {'form': form})  # вывеси форму в шаблон
+class ProfileUser(LoginRequiredMixin, UpdateView):  # Класс пред-я для профиля пользователя(Mixin - запрет просмотра
+    model = get_user_model()          # профиля для не авторизованных пользователей, Update - изменение текущих записей.
+    form_class = ProfileUserForm  # ссылка на форму ProfileUserForm
+    template_name = 'users/profile.html'  # шаблон
+    extra_context = {'title': "Профиль пользователя"}  # заголовок + текс
+
+    def get_success_url(self):  # метод для перенаправления на указанный адрес, после изменения записей
+        return reverse_lazy('users:profile')  # возврат на текущую страницу
+
+    def get_object(self, queryset=None):  # Метод, возвращающий запись, которая редактируется
+        return self.request.user  # обращение к текущему пользователю
