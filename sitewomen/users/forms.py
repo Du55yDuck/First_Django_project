@@ -41,3 +41,20 @@ class RegisterUserForm(UserCreationForm):  # Класс форма для рег
             # если такой найден, тогда отрабатывает генерация исключения
             raise forms.ValidationError("Такой E-mail уже существует!")  # исключение, если проверка не прошла
         return email
+
+
+class ProfileUserForm(forms.ModelForm):  # Форма для профиля пользователя(отображаемые поля), связан с моделью
+    username = forms.CharField(disabled=True, label="Логин", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    email = forms.CharField(disabled=True, label="E-mail", widget=forms.TextInput(attrs={'class': 'form-input'}))
+
+    class Meta:
+        model = get_user_model()
+        fields = ['username', 'email', 'first_name', 'last_name']
+        labels = {
+            'first_name': 'Имя',
+            'last_name': 'Фамилия',
+        }
+        widgets = {  # стили полей
+            'first_name': forms.TextInput(attrs={'class': 'form-input'}),
+            'last_name': forms.TextInput(attrs={'class': 'form-input'}),
+        }
