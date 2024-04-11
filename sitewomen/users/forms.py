@@ -1,6 +1,6 @@
 from django import forms  # импортируем из django
 from django.contrib.auth import get_user_model
-from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
 
 
 class LoginUserForm(AuthenticationForm):  # класс для авторизации (форма не связана с моделью)
@@ -58,3 +58,10 @@ class ProfileUserForm(forms.ModelForm):  # Форма для профиля по
             'first_name': forms.TextInput(attrs={'class': 'form-input'}),
             'last_name': forms.TextInput(attrs={'class': 'form-input'}),
         }
+
+
+class UserPasswordChangeForm(PasswordChangeForm):  # Форма для смены пароля(наследие от стандартного PasswordChangeForm)
+    old_password = forms.CharField(label="Старый пароль", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    new_password1 = forms.CharField(label="Новый пароль", widget=forms.PasswordInput(attrs={'class': 'form-input'}))
+    new_password2 = forms.CharField(label="Подтверждение пароля",  # + {'class': 'form-input'} - стиль полей
+                                    widget=forms.PasswordInput(attrs={'class': 'form-input'}))
