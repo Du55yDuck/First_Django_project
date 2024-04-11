@@ -1,11 +1,11 @@
 from django.contrib.auth import logout, get_user_model
 from django.contrib.auth.mixins import LoginRequiredMixin
-from django.contrib.auth.views import LoginView
+from django.contrib.auth.views import LoginView, PasswordChangeView
 from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
-from users.forms import LoginUserForm, RegisterUserForm, ProfileUserForm
+from users.forms import LoginUserForm, RegisterUserForm, ProfileUserForm, UserPasswordChangeForm
 
 
 class LoginUser(LoginView):  # класс типа LoginView для авторизации(наследуется от LoginView)
@@ -40,3 +40,9 @@ class ProfileUser(LoginRequiredMixin, UpdateView):  # Класс пред-я д�
 
     def get_object(self, queryset=None):  # Метод, возвращающий запись, которая редактируется
         return self.request.user  # обращение к текущему пользователю
+
+
+class UserPasswordChange(PasswordChangeView):  # Класс предс-я для смены пароля (наследие от стандартного класса -->
+    form_class = UserPasswordChangeForm  # Ссылка на собственную форму.                         --> PasswordChangeView)
+    success_url = reverse_lazy("users:password_change_done")  # перенаправление по указанному адресу
+    template_name = "users/password_change_form.html"  # путь к шаблону
