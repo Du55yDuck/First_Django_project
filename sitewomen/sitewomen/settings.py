@@ -146,3 +146,4 @@ AUTHENTICATION_BACKENDS = ['django.contrib.auth.backends.ModelBackend',  # Ко�
                            'users.authentication.EmailAuthBackend', ]  # (путь к классу - авторизация по email)
 # авторизации пользователей(содержит def authenticate(), def get_user - необходимые для пользовательской авторизации)
 # стандартный ModelBackend проводит авторизацию по логину и паролю.
+EMAIL_BACKEND = "django.core.mail.backends.console.EmailBackend"  # Отправка писем в консоль(см доку)
