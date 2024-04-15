@@ -157,3 +157,7 @@ EMAIL_USE_SSL = True  # защита соединения
 DEFAULT_FROM_EMAIL = EMAIL_HOST_USER  # Обязательные параметры для заполнения(EMAIL_HOST_USER можно менять на другие)
 SERVER_EMAIL = EMAIL_HOST_USER
 EMAIL_ADMIN = EMAIL_HOST_USER
+
+AUTH_USER_MODEL = 'users.User'  # Явно указать параметр 'users.User', так как по умолчанию 'auth.User'
+
+DEFAULT_USER_IMAGE = MEDIA_URL + 'users/default.png'  # маршрут для привязки стандартной аватарки

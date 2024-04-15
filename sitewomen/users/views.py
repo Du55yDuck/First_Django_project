@@ -5,6 +5,7 @@ from django.http import HttpResponseRedirect
 from django.urls import reverse, reverse_lazy
 from django.views.generic import CreateView, UpdateView
 
+import settings
 from users.forms import LoginUserForm, RegisterUserForm, ProfileUserForm, UserPasswordChangeForm
 
 
@@ -33,7 +34,9 @@ class ProfileUser(LoginRequiredMixin, UpdateView):  # Класс пред-я д�
     model = get_user_model()          # профиля для не авторизованных пользователей, Update - изменение текущих записей.
     form_class = ProfileUserForm  # ссылка на форму ProfileUserForm
     template_name = 'users/profile.html'  # шаблон
-    extra_context = {'title': "Профиль пользователя"}  # заголовок + текс
+    extra_context = {'title': "Профиль пользователя",  # Заголовок + текст
+                     'default_image': settings.DEFAULT_USER_IMAGE  # Параметр для отображения стандартной аватарки
+                     }
 
     def get_success_url(self):  # метод для перенаправления на указанный адрес, после изменения записей
         return reverse_lazy('users:profile')  # возврат на текущую страницу
