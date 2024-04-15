@@ -1,3 +1,5 @@
+from datetime import date
+
 from django import forms  # импортируем из django
 from django.contrib.auth import get_user_model
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm, PasswordChangeForm
@@ -46,10 +48,13 @@ class RegisterUserForm(UserCreationForm):  # Класс форма для рег
 class ProfileUserForm(forms.ModelForm):  # Форма для профиля пользователя(отображаемые поля), связан с моделью
     username = forms.CharField(disabled=True, label="Логин", widget=forms.TextInput(attrs={'class': 'form-input'}))
     email = forms.CharField(disabled=True, label="E-mail", widget=forms.TextInput(attrs={'class': 'form-input'}))
+    this_year = date.today().year  # Стандартный модуль для получения текущего года
+    date_birth = forms.DateField(widget=forms.SelectDateWidget(years=tuple(range(this_year-100, this_year-5))))  # Спец
+    #  widget для удобного заполнения поля даты + диапазон возраста от 5-100 лет
 
     class Meta:
-        model = get_user_model()
-        fields = ['username', 'email', 'first_name', 'last_name']
+        model = get_user_model()  # Стараться использовать get_user_model() вместо обычного обращения user!
+        fields = ['photo', 'username', 'email', 'date_birth', 'first_name', 'last_name']
         labels = {
             'first_name': 'Имя',
             'last_name': 'Фамилия',

@@ -1,3 +1,5 @@
-from django.contrib import admin
+from django.contrib import admin  # импорт и подключение модели class User(AbstractUser)
+from django.contrib.auth.admin import UserAdmin
+from .models import User
 
-# Register your models here.
+admin.site.register(User, UserAdmin)

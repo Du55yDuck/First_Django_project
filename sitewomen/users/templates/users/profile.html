@@ -3,8 +3,14 @@
 {% block content %}  <!-- Переопределение блока content -->
 <h1>Профиль пользователя</h1>
 
-<form method="post">  <!-- Форма для передачи данных методом post -->
+<form method="post" enctype="multipart/form-data">  <!-- Форма для передачи данных методом post + отображение фото -->
     {% csrf_token %}  <!-- Обязательный атрибут csrf -->
+    {% if user.photo %}  <!-- Если photo != 0 (фото присутствует), то отобразить фото по его url -->
+    <p><img src="{{ user.photo.url }}"></p>
+    {% else %}  <!-- Иначе вывести аватарку по умолчанию -->
+    <p><img src="{{ default_image }}"></p>  <!-- Переменная из class ProfileUser -->
+    {% endif %}
+
     <div class="form-error">{{ form.non_field_errors }}</div>  <!-- Отображение ошибок в заполнении полей формы-->
     {% for f in form %} <!-- Цикл для перебора и отображения полей формы-->
     <p><label class="form-label" for="{{ f.id_for_label }}">{{ f.label }}</label>{{ f }}</p>  <!-- Вывод текущего поля-->
