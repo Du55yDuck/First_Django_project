@@ -1,6 +1,10 @@
 {% extends 'base.html' %} <!-- Шаблон для отображения статьи-->
 
 {% block breadcrumbs %} <!-- блок из base.html-->
+{% if perms.women.change_women %}  <!-- Обращение через perms к пользователям - Если у них есть права на редактирование-->
+<p><a href="{% url 'edit_page' post.slug %}">Редактировать статью</a></p>  <!-- Тогда вывод ссылки на редактирование статьи-->
+{% endif %}
+
 <!-- Теги -->
 {% with post.tags.all as tags %} <!-- post(текущ отображаемая запись из Women) выбир все теги через ОРМ и переноc в tags-->
 {% if tags %} <!-- проверка на наличие -->
@@ -13,7 +17,6 @@
 {% endif %}
 {% endwith %}
 {% endblock %}
-
 
 {% block content %}
 <h1>{{post.title}}</h1>

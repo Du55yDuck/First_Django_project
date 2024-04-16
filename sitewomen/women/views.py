@@ -1,5 +1,5 @@
-from django.contrib.auth.decorators import login_required
-from django.contrib.auth.mixins import LoginRequiredMixin
+from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.auth.mixins import LoginRequiredMixin, PermissionRequiredMixin
 from django.core.paginator import Paginator
 from django.http import HttpResponse, HttpResponseNotFound  # импорт наших классов из django.http
 from django.shortcuts import render, get_object_or_404  # импорт redirect
@@ -53,11 +53,12 @@ class ShowPost(DataMixin, DetailView):  # класс отображает выб
     # записей(только публикованные), по slug-у через переменную slug_url_kwargs из ShowPost
 
 
-class AddPage(LoginRequiredMixin, DataMixin, CreateView):  # Class типа (CreateView) использует спец переменную form в
-    # addpage.html для взаимодействия. Иначе необходимо вносить изменения в шаблон + @Mixin огр доступ для н/а польз-й
+class AddPage(PermissionRequiredMixin, LoginRequiredMixin, DataMixin, CreateView):  # Class типа (CreateView) исп-т спец
+    # Переменную form в addpage.html для взаимо-я. Иначе необход изменения в шаблоне + @Mixin огр доступ для н/а польз-й
     form_class = AddPostForm  # ссылка на сам класс AddPostForm(forms.py), а не на объект класса ()
     template_name = 'women/addpage.html'  # путь и имя используемого шаблона
     title_page = 'Добавление статьи'
+    permission_required = 'women.add_women'  # разреш-ие для получения доступа к этой стр-е(приложение.действие_таблица)
     # login_url = '/login/'  # доп, не обязательный атрибут для перехода по указанному адресу для н/а пользователей
 
     def form_valid(self, form):  # метод связывающий автора со статьей(form - проверенная и заполненная форма)
@@ -66,15 +67,17 @@ class AddPage(LoginRequiredMixin, DataMixin, CreateView):  # Class типа (Cre
         return super().form_valid(form)  # сохранение w путем вызова метода form_valid из базового класса, передать form
 
 
-class UpdatePage(DataMixin, UpdateView):  # Класс представления типа (UpdateView) для обновления статей
+class UpdatePage(PermissionRequiredMixin, DataMixin, UpdateView):  # Класс типа (UpdateView) для обновления статей
     model = Women  # связка с моделью Women
     fields = ['title', 'content', 'photo', 'is_published', 'cat']  # поля для обязательного заполнения
     template_name = 'women/addpage.html'  # путь к шаблону
     success_url = reverse_lazy('home')  # маршрут на главную страницу, после ввода данных в момент необходимости
     title_page = 'Редактирование статьи'
+    permission_required = 'women.change_women'  # разрешение на редактирование статьи
 
 
-def contact(request):  # ф-я для контактов
+@permission_required(perm='women.view_women', raise_exception=True)  # Аналог PermissionRequiredMixin, только для def()
+def contact(request):  # ф-я для контактов (perm - разрешение для указанного действия, raise..=True - генера-я кода 403)
     return HttpResponse("Обратная связь")
 
 
