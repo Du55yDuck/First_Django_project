@@ -114,7 +114,7 @@ AUTH_PASSWORD_VALIDATORS = [
 
 LANGUAGE_CODE = 'ru-Ru'  # русский язык админки 'en-US'- по умолчанию
 
-TIME_ZONE = 'UTC'
+TIME_ZONE = 'Europe/Moscow'  # временной пояс
 
 USE_I18N = True
 
